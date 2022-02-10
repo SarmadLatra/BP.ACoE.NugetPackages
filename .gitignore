@@ -3,3 +3,5 @@
 ################################################################################
 
 /.vs/BP.ACoE.NugetPackages
+/BP.ACoE.ChatBotHelper/bin/Debug/net6.0
+/BP.ACoE.ChatBotHelper/obj
