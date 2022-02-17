@@ -11,6 +11,7 @@
     <PackageTags>Chatbot;HelperAPI;SalesForce;MuleSoft;Azure Table Storage; Azure CosmosDB;</PackageTags>
     <PackageReleaseNotes>first release</PackageReleaseNotes>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <RepositoryUrl>https://bp-vsts.visualstudio.com/RPA%20CoE/_git/000%20Pluto%20VA%20-%20Nuget</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
