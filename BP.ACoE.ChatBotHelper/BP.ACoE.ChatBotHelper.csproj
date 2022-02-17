@@ -4,6 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Authors>mudasar.rauf1@bp.com</Authors>
+    <Company>BP</Company>
+    <Description>This package contains common API's for chatbot operations</Description>
+    <PackageReadmeFile>readme.MD</PackageReadmeFile>
+    <PackageTags>Chatbot;HelperAPI;SalesForce;MuleSoft;Azure Table Storage; Azure CosmosDB;</PackageTags>
+    <PackageReleaseNotes>first release</PackageReleaseNotes>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +34,13 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="readme.MD">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
