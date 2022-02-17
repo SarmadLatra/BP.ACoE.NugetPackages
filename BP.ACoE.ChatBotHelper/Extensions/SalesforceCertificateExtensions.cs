@@ -3,8 +3,6 @@ using BP.ACoE.ChatBotHelper.Helpers;
 using BP.ACoE.ChatBotHelper.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace BP.ACoE.ChatBotHelper.Extensions
@@ -32,19 +30,16 @@ namespace BP.ACoE.ChatBotHelper.Extensions
             services.Configure<AzureKeyVaultSettings>(configuration.GetSection(AzureKeyVaultSettings.AzureKeyVaultSettingsName));
             services.Configure<SalesForceCertificateSettings>(configuration.GetSection(SalesForceCertificateSettings.SalesForceCertificateSettingsName));
 
-            return TryAddSalesForceCertificate(services, configuration);
+            return TryAddSalesForceCertificate(services);
         }
 
-        private static IServiceCollection TryAddSalesForceCertificate(IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection TryAddSalesForceCertificate(IServiceCollection services)
         {
             // get the certificate object from configuration
             var serviceProvider = services.BuildServiceProvider();
             var salesForceSettings = serviceProvider.GetRequiredService<IOptions<SalesForceCertificateSettings>>().Value;
             salesForceSettings.Validate();
 
-            //var certName = configuration.GetValue<string>("SalesForceCertName");
-            //var certPath = configuration.GetValue<string>("SalesForceCertPath");
-            //var certPassword = configuration.GetValue<string>("SalesForceCertPassword");
             var certFullPath = Path.Combine(salesForceSettings.SalesForceCertPath!, salesForceSettings.SalesForceCertName!);
             var cert = File.Exists(certFullPath) ? new X509Certificate2(File.ReadAllBytes(certFullPath), salesForceSettings.SalesForceCertPassword, X509KeyStorageFlags.UserKeySet
                     | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable) : null;

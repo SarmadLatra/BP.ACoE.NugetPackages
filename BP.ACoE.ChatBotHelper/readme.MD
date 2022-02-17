@@ -166,3 +166,10 @@ else
 ## JSON Helper
 
 Use the extension method ```.ToJson()``` to get serialized version of any object
+
+## Object To Dictionary Helper
+
+```
+    {object}.ToDictionary()
+```
+user this extension mehtod to convert any object to dictionary.

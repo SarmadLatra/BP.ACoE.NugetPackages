@@ -72,6 +72,6 @@ public class AppInsightsService : IAppInsightsService
             genericEventDetails.Add("userId", userId);
         }
 
-        await CustomTypedEventAsync(genericEventDetails, Enum.GetName(typeof(AppInsightCustomEventTypes), AppInsightCustomEventTypes.GENERIC_EVENT));
+        await CustomTypedEventAsync(genericEventDetails, Enum.GetName(typeof(AppInsightCustomEventTypes), AppInsightCustomEventTypes.GenericEvent));
     }
 }
