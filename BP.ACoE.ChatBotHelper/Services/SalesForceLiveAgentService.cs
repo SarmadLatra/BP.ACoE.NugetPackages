@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 using BP.ACoE.ChatBotHelper.Models;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
@@ -19,14 +15,14 @@ namespace BP.ACoE.ChatBotHelper.Services
         private readonly HttpClient _client;
         private readonly ILogger _logger;
         private readonly SalesForceLiveAgentSettings _salesForceLiveAgentSettings;
-        private const string SF_API_VERSION_KEY = "X-LIVEAGENT-API-VERSION";
-        private const string SF_API_AFFINITY_KEY = "X-LIVEAGENT-AFFINITY";
-        private const string SF_API_SESSION_KEY = "X-LIVEAGENT-SESSION-KEY";
-        private const string SF_API_SEQUENCE_KEY = "X-LIVEAGENT-SEQUENCE";
+        private const string SfApiVersionKey = "X-LIVEAGENT-API-VERSION";
+        private const string SfApiAffinityKey = "X-LIVEAGENT-AFFINITY";
+        private const string SfApiSessionKey = "X-LIVEAGENT-SESSION-KEY";
+        private const string SfApiSequenceKey = "X-LIVEAGENT-SEQUENCE";
         private const string ClassName = "SalesForceService--";
-        private readonly IAppInsightsCustomEventService _appInsightsCustomEventService;
+        private readonly IAppInsightsService _appInsightsCustomEventService;
 
-        public SalesForceLiveAgentService(HttpClient httpClient, ILogger logger, IOptions<SalesForceLiveAgentSettings> liveAgentOptions, IAppInsightsCustomEventService appInsightsCustomEventService)
+        public SalesForceLiveAgentService(HttpClient httpClient, ILogger logger, IOptions<SalesForceLiveAgentSettings> liveAgentOptions, IAppInsightsService appInsightsCustomEventService)
         {
             _client = httpClient;
             _appInsightsCustomEventService = appInsightsCustomEventService;
@@ -38,32 +34,213 @@ namespace BP.ACoE.ChatBotHelper.Services
             }
         }
 
-        public Task<string> EndLiveAgentChatSession(ChatEndModel model)
+        public virtual async Task<string> EndLiveAgentChatSession(ChatEndModel model)
         {
-            throw new NotImplementedException();
+            const string methodName = "EndLiveAgentChatSession--";
+
+            _logger.Information($"{ClassName}{methodName} end chat session is called");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, _salesForceLiveAgentSettings.ChatEndUrl)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new
+                {
+                    reason = model.Reason
+                }), Encoding.UTF8, "application/json")
+            };
+            _client.DefaultRequestHeaders.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, model.AffinityToken);
+            _client.DefaultRequestHeaders.Add(SfApiSessionKey, model.SessionKey);
+
+            _logger.Information($"{ClassName}{methodName} Request payload is created");
+            var response = await _client.SendAsync(requestMessage);
+            _logger.Information($"{ClassName}{methodName} End Chat API is called");
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.Information($"{ClassName}{methodName} End Chat success response received ");
+                var responseData = await response.Content.ReadAsStringAsync();
+
+                _logger.Information($"{ClassName}{methodName} End Chat API response serialized into model {responseData}");
+                return responseData;
+            }
+            else
+            {
+                _logger.Information($"{ClassName}{methodName} Sales Force End Chat request error ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} End Chat request error {responseData} ");
+                throw new HttpRequestException(responseData);
+            }
         }
 
-        public Task<string> SendChatMessageToAgent(ChatMessageModel model)
+        public virtual async Task<string> SendChatMessageToAgent(ChatMessageModel model)
         {
-            throw new NotImplementedException();
+            const string methodName = "SendChatMessageToAgent--";
+            _logger.Information($"{ClassName}{methodName} started");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, _salesForceLiveAgentSettings.SendChatMessageUrl)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new
+                {
+                    text = model.Message
+                }), Encoding.UTF8, "application/json")
+            };
+            _client.DefaultRequestHeaders.Clear();
+
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, model.AffinityToken);
+            _client.DefaultRequestHeaders.Add(SfApiSessionKey, model.SessionKey);
+
+            _logger.Information($"{ClassName}{methodName} Request payload is created");
+            var response = await _client.SendAsync(requestMessage);
+            _logger.Information($"{ClassName}{methodName} Send Chat Message API is called");
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.Information($"{ClassName}{methodName} success response received ");
+                var responseData = await response.Content.ReadAsStringAsync();
+
+                _logger.Information($"{ClassName}{methodName} response serialized into model {responseData}");
+                return responseData;
+            }
+            else
+            {
+                _logger.Information($"{ClassName}{methodName} End Chat request error ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} End Chat request error {responseData} ");
+                throw new HttpRequestException(responseData);
+            }
         }
 
-        public Task<LiveAgentMessageResponse> GetCurrentMessagesFromLiveAgent(string sessionId, string affinityToken)
+        public virtual async Task<LiveAgentMessageResponse?> GetCurrentMessagesFromLiveAgent(string sessionId, string affinityToken)
         {
-            throw new NotImplementedException();
+            const string methodName = "GetCurrentMessageFromLiveAgent--";
+            _logger.Information($"{ClassName}{methodName} started");
+
+            _client.DefaultRequestHeaders.Clear();
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, _salesForceLiveAgentSettings.GetChatMessagesUrl);
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, affinityToken);
+            _client.DefaultRequestHeaders.Add(SfApiSessionKey, sessionId);
+
+
+            _logger.Information($"{ClassName}{methodName} Request payload is created");
+            var response = await _client.SendAsync(requestMessage);
+            _logger.Information($"{ClassName}{methodName} API is called");
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.Information($"{ClassName}{methodName} success response received ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                var parseResponse = JsonConvert.DeserializeObject<LiveAgentMessageResponse>(responseData);
+                _logger.Information($"{ClassName}{methodName} response serialized into model {responseData}");
+                return parseResponse;
+            }
+            else
+            {
+                _logger.Information($"{ClassName}{methodName} request error ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} request error {responseData} ");
+                throw new HttpRequestException(responseData);
+            }
         }
 
-        public Task<string> StartChatWithLiveAgent(StartChatModel model)
+        public virtual async Task<string> StartChatWithLiveAgent(StartChatModel model)
         {
-            throw new NotImplementedException();
+            const string methodName = "StartChatWithLiveAgent--";
+
+            _logger.Information($"{ClassName}{methodName} started");
+
+            var content = JsonConvert.SerializeObject(value: new
+            {
+                organizationId = _salesForceLiveAgentSettings.OrganizationId,
+                deploymentId = _salesForceLiveAgentSettings.DeploymentId,
+                buttonId = _salesForceLiveAgentSettings.ButtonId,
+                sessionId = model.SessionId,
+                userAgent = "Lynx/2.8.8",
+                language = "en-US",
+                screenResolution = "1900x1080",
+                visitorName = model.VisitorName,
+                prechatDetails = model.PreChatDetails,
+                prechatEntities = model.PreChatEntities,
+                receiveQueueUpdates = model.ReceiveQueueUpdates,
+                isPost = model.IsPost
+            });
+
+            _logger.Information($"{ClassName}{methodName} Request payload {content}");
+
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, _salesForceLiveAgentSettings.StartChatUrl)
+            {
+                Content = new StringContent(content, Encoding.UTF8, "application/json")
+            };
+            _client.DefaultRequestHeaders.Clear();
+
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, model.AffinityToken);
+            _client.DefaultRequestHeaders.Add(SfApiSessionKey, model.SessionKey);
+            _client.DefaultRequestHeaders.Add(SfApiSequenceKey, "1");
+
+            _logger.Information($"{ClassName}{methodName} Request payload is created");
+            var response = await _client.SendAsync(requestMessage);
+            _logger.Information($"{ClassName}{methodName} API is called");
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.Information($"{ClassName}{methodName} success response received ");
+                var responseData = await response.Content.ReadAsStringAsync();
+
+                _logger.Information($"{ClassName}{methodName} response serialized into model {responseData}");
+                return responseData;
+            }
+            else
+            {
+                _logger.Information($"{ClassName}{methodName} request error ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} request error {responseData} ");
+                throw new HttpRequestException(responseData);
+            }
         }
 
-        public Task<LiveAgentSession> GetLiveAgentSessions()
+        public virtual async Task<LiveAgentSession?> GetLiveAgentSessions()
         {
-            throw new NotImplementedException();
+            const string methodName = "GetLiveAgentSessions--";
+            _logger.Information($"{ClassName}{methodName} started");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, _salesForceLiveAgentSettings.LiveAgentSessionUrl);
+            _client.DefaultRequestHeaders.Clear();
+
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, "null");
+            _client.DefaultRequestHeaders.Add(SfApiSequenceKey, "1");
+            
+            var response = await _client.SendAsync(requestMessage);
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.Information($"{ClassName}{methodName} success response received ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                var parseResponse = JsonConvert.DeserializeObject<LiveAgentSession>(responseData);
+                //Raise event
+                var liveAgentData = new
+                {
+                    parseResponse?.Id,
+                    Message = "Live Agent Session Connected"
+                };
+                await _appInsightsCustomEventService.RaiseGenericCustomEvent($"Live Agent session received {Convert.ToString(liveAgentData.Id)} with message: {liveAgentData.Message}");
+                _logger.Information($"{ClassName}{methodName} response serialized into model {responseData}");
+                return parseResponse;
+            }
+            else
+            {
+                _logger.Information($"{ClassName}{methodName} request error ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} request error {responseData} ");
+                throw new HttpRequestException(responseData);
+            }
         }
 
-        public async Task<LiveAgentResponse?> GetAvailableLiveAgents()
+        public virtual async Task<LiveAgentResponse?> GetAvailableLiveAgents()
         {
             const string methodName = "GetAvailableLiveAgents--";
             _logger.Information($"{ClassName}{methodName} started");
@@ -72,8 +249,8 @@ namespace BP.ACoE.ChatBotHelper.Services
             _client.DefaultRequestHeaders.Clear();
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, _salesForceLiveAgentSettings.AvailableLiveAgentsUrl);
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.Add(SF_API_VERSION_KEY, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SF_API_AFFINITY_KEY, "");
+            _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, "");
 
 
             _logger.Information($"{ClassName}{methodName} Request payload is created");
@@ -92,19 +269,81 @@ namespace BP.ACoE.ChatBotHelper.Services
                 _logger.Information($"{ClassName}{methodName} request error ");
                 var responseData = await response.Content.ReadAsStringAsync();
                 _logger.Information($"{ClassName}{methodName} request error {responseData} ");
-                await _appInsightsCustomEventService.RaiseGenericCustomEvent(className: ClassName, methodName, $"failed with {responseData}");
+                await _appInsightsCustomEventService.RaiseGenericCustomEvent($"{ClassName}{methodName} failed with {responseData}");
                 throw new HttpRequestException(responseData);
             }
         }
 
-        public Task SendTypingEventToAgent(string sessionKey, string affinityToken)
+        public virtual async Task SendTypingEventToAgent(string sessionKey, string affinityToken)
         {
-            throw new NotImplementedException();
+            const string methodName = "SendTypingEventToAgent--";
+
+            _logger.Information($"{ClassName}{methodName} end chat session is called");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, _salesForceLiveAgentSettings.ChatEndUrl)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new
+                {
+                }), Encoding.UTF8, "application/json")
+            };
+            _client.DefaultRequestHeaders.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, affinityToken);
+            _client.DefaultRequestHeaders.Add(SfApiSessionKey, sessionKey);
+
+            _logger.Information($"{ClassName}{methodName} Request payload is created");
+            var response = await _client.SendAsync(requestMessage);
+            _logger.Information($"{ClassName}{methodName} End Chat API is called");
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.Information($"{ClassName}{methodName} End Chat success response received ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} End Chat API response serialized into model {responseData}");
+            }
+            else
+            {
+                _logger.Information($"{ClassName}{methodName} Sales Force End Chat request error ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} End Chat request error {responseData} ");
+                throw new HttpRequestException(responseData);
+            }
         }
 
-        public Task SendNotTypingEventToAgent(string sessionKey, string affinityToken)
+        public virtual async Task SendNotTypingEventToAgent(string sessionKey, string affinityToken)
         {
-            throw new NotImplementedException();
+            const string methodName = "SendNotTypingEventToAgent--";
+
+            _logger.Information($"{ClassName}{methodName} is called");
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, _salesForceLiveAgentSettings.ChatEndUrl)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(new
+                {
+                }), Encoding.UTF8, "application/json")
+            };
+            _client.DefaultRequestHeaders.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, affinityToken);
+            _client.DefaultRequestHeaders.Add(SfApiSessionKey, sessionKey);
+
+            _logger.Information($"{ClassName}{methodName} Request payload is created");
+            var response = await _client.SendAsync(requestMessage);
+            _logger.Information($"{ClassName}{methodName} Not Typing API is called");
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.Information($"{ClassName}{methodName}  success response received ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} Not Typing API response serialized into model {responseData}");
+            }
+            else
+            {
+                _logger.Information($"{ClassName}{methodName} Sales Force Not Typing request error ");
+                var responseData = await response.Content.ReadAsStringAsync();
+                _logger.Information($"{ClassName}{methodName} request error {responseData} ");
+                throw new HttpRequestException(responseData);
+            }
         }
     }
 }

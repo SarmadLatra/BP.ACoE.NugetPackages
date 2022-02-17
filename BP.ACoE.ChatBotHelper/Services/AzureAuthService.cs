@@ -13,16 +13,16 @@ namespace BP.ACoE.ChatBotHelper.Services
         private readonly ILogger _log;
 
         private const string ClassName = "AzureAuthService ---";
-        private readonly IAppInsightsCustomEventService _applicationInsightService;
+        private readonly IAppInsightsService _applicationInsightService;
 
-        public AzureAuthService(HttpClient client, ILogger logger, IAppInsightsCustomEventService applicationInsightService)
+        public AzureAuthService(HttpClient client, ILogger logger, IAppInsightsService applicationInsightService)
         {
             _client = client;
             _log = logger.ForContext<AzureAuthService>();
             _applicationInsightService = applicationInsightService;
         }
 
-        public async Task<AccessTokenResponse?> GetAzureAuthToken(AzureAuthSettings azureAuthSettings)
+        public virtual async Task<AccessTokenResponse?> GetAzureAuthToken(AzureAuthSettings azureAuthSettings)
         {
             const string methodName = "GetAzureAuthToken---";
 

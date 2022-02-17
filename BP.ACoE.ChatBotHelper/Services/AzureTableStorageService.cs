@@ -22,7 +22,7 @@ namespace BP.ACoE.ChatBotHelper.Services
         }
 
 
-        public async Task<TableClient> GetStorageTableAsync(string tableName)
+        public virtual  async Task<TableClient> GetStorageTableAsync(string tableName)
         {
 
             var tableClient = _serviceClient.GetTableClient(tableName);
@@ -38,13 +38,13 @@ namespace BP.ACoE.ChatBotHelper.Services
             }
         }
 
-        public async Task<BaseEntity> GetEntityByRowKey(string tableName, string rowKey)
+        public virtual async Task<BaseEntity> GetEntityByRowKey(string tableName, string rowKey)
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
             return await tableClient.GetEntityAsync<BaseEntity>(_partitionKey, rowKey);
         }
 
-        public async Task<IEnumerable<BaseEntity>> GetEntitiesByQuery(string tableName, string query, int maxPerPage = 100)
+        public virtual async Task<IEnumerable<BaseEntity>> GetEntitiesByQuery(string tableName, string query, int maxPerPage = 100)
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
             var result = tableClient.QueryAsync<BaseEntity>(query, maxPerPage: maxPerPage);
@@ -57,7 +57,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             return data;
         }
 
-        public async Task<IEnumerable<BaseEntity>> GetEntitiesByQuery(string tableName, Expression<Func<BaseEntity, bool>> query)
+        public virtual async Task<IEnumerable<BaseEntity>> GetEntitiesByQuery(string tableName, Expression<Func<BaseEntity, bool>> query)
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
             var result = tableClient.QueryAsync(query);
@@ -70,7 +70,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             return data;
         }
 
-        public async Task<BaseEntity> InsertEntity(string tableName, BaseEntity entity)
+        public virtual async Task<BaseEntity> InsertEntity(string tableName, BaseEntity entity)
         {
             var table = _serviceClient.GetTableClient(tableName);
             var result = await table.AddEntityAsync(entity);
@@ -79,7 +79,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             throw new HttpRequestException($"Invalid create merge response, {result.ReasonPhrase}");
         }
 
-        public async Task<BaseEntity> UpdateEntity(string tableName, BaseEntity entity, TableUpdateMode updateMode = TableUpdateMode.Merge)
+        public virtual async Task<BaseEntity> UpdateEntity(string tableName, BaseEntity entity, TableUpdateMode updateMode = TableUpdateMode.Merge)
         {
             var table = _serviceClient.GetTableClient(tableName);
             var result = await table.UpdateEntityAsync(entity, ETag.All, updateMode);
@@ -88,7 +88,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             throw new HttpRequestException($"Invalid Entity merge response, {result.ReasonPhrase}");
         }
 
-        public BaseEntity GetEntityByConversationId(string tableName, string conversationId)
+        public virtual BaseEntity GetEntityByConversationId(string tableName, string conversationId)
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
             var result = tableClient.QueryAsync<BaseEntity>($"PartitionKey eq '{_partitionKey}' and ConversationId eq '{conversationId}'", maxPerPage: 1);
@@ -104,7 +104,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             }
         }
 
-        public async Task<bool> RemoveEntity(string tableName, string rowKey)
+        public virtual async Task<bool> RemoveEntity(string tableName, string rowKey)
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
 

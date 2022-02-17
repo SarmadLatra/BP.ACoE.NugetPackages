@@ -11,9 +11,9 @@ namespace BP.ACoE.ChatBotHelper.Services.Interfaces
     {
         Task<string> EndLiveAgentChatSession(ChatEndModel model);
         Task<string> SendChatMessageToAgent(ChatMessageModel model);
-        Task<LiveAgentMessageResponse> GetCurrentMessagesFromLiveAgent(string sessionId, string affinityToken);
+        Task<LiveAgentMessageResponse?> GetCurrentMessagesFromLiveAgent(string sessionId, string affinityToken);
         Task<string> StartChatWithLiveAgent(StartChatModel model);
-        Task<LiveAgentSession> GetLiveAgentSessions();
+        Task<LiveAgentSession?> GetLiveAgentSessions();
         Task<LiveAgentResponse?> GetAvailableLiveAgents();
         Task SendTypingEventToAgent(string sessionKey, string affinityToken);
         Task SendNotTypingEventToAgent(string sessionKey, string affinityToken);

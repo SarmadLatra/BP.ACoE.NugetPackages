@@ -22,7 +22,7 @@ namespace BP.ACoE.ChatBotHelper.Services
 
         protected CosmosClient DbClient => _dbClient;
 
-        public async Task<T> GetEntityById<T>(string id) where T : BaseCosmosEntity
+        public virtual async Task<T> GetEntityById<T>(string id) where T : BaseCosmosEntity
         {
             try
             {
@@ -35,9 +35,9 @@ namespace BP.ACoE.ChatBotHelper.Services
             }
         }
 
-        public async Task<IEnumerable<T>> GetEntitiesByQuery<T>(string queryString) where T : BaseCosmosEntity
+        public virtual async Task<IEnumerable<T>> GetEntitiesByQuery<T>(string queryString) where T : BaseCosmosEntity
         {
-            var query = this._container.GetItemQueryIterator<T>(new QueryDefinition(queryString));
+            var query = _container.GetItemQueryIterator<T>(new QueryDefinition(queryString));
             var results = new List<T>();
             while (query.HasMoreResults)
             {
@@ -49,19 +49,19 @@ namespace BP.ACoE.ChatBotHelper.Services
             return results;
         }
 
-        public async Task<T> InsertEntity<T>(T entity) where T : BaseCosmosEntity
+        public virtual async Task<T> InsertEntity<T>(T entity) where T : BaseCosmosEntity
         {
-            var response = await this._container.CreateItemAsync<T>(entity, new PartitionKey(entity.Id));
+            var response = await _container.CreateItemAsync(entity, new PartitionKey(entity.Id));
             return response.Resource;
         }
 
-        public async Task<T> UpdateEntity<T>(T entity) where T : BaseCosmosEntity
+        public virtual async Task<T> UpdateEntity<T>(T entity) where T : BaseCosmosEntity
         {
-            var response = await this._container.UpsertItemAsync<T>(entity, new PartitionKey(entity.Id));
+            var response = await _container.UpsertItemAsync(entity, new PartitionKey(entity.Id));
             return response.Resource;
         }
 
-        public async Task<T> RemoveEntity<T>(string id) where T : BaseCosmosEntity
+        public virtual async Task<T> RemoveEntity<T>(string id) where T : BaseCosmosEntity
         {
             var response = await this._container.DeleteItemAsync<T>(id, new PartitionKey(id));
             return response.Resource;

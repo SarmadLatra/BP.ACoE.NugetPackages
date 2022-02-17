@@ -71,5 +71,6 @@ namespace BP.ACoE.ChatBotHelper.Models
         ConversationProcessed,
         ConversationRemovedFromJobQuery,
         ConversationAddedToJobQueue,
+        GENERIC_EVENT
     }
 }

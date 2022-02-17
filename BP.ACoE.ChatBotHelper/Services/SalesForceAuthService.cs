@@ -25,7 +25,7 @@ namespace BP.ACoE.ChatBotHelper.Services
         private readonly ISalesForceCertificateHelper _salesForceCertificateHelper;
         private readonly IMemoryCache _cache;
         private const string SfAuthCacheName = "SFAuthCache";
-        private readonly IAppInsightsCustomEventService _applicationInsightService;
+        private readonly IAppInsightsService _applicationInsightService;
         private readonly AzureKeyVaultSettings? _azureKeyVaultSettings;
         private readonly SalesForceCertificateSettings? _salesForceCertificateSettings;
 
@@ -34,7 +34,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             ISalesForceCertificateHelper salesForceCertificateHelper, IMemoryCache cache,
             IOptions<AzureKeyVaultSettings> azureKeyVaultOptions,
             IOptions<SalesForceCertificateSettings> salesForceCertOptions,
-            IAppInsightsCustomEventService applicationInsightService)
+            IAppInsightsService applicationInsightService)
         {
             _configuration = configuration;
             _client = client;
@@ -46,7 +46,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             _salesForceCertificateSettings = salesForceCertOptions.Value;
         }
 
-        public async Task<SalesForceAuthResponse?> GetSalesForceAccessToken()
+        public virtual async Task<SalesForceAuthResponse?> GetSalesForceAccessToken()
         {
             const string methodName = "GetSalesForceAccessToken--";
 
@@ -112,7 +112,7 @@ namespace BP.ACoE.ChatBotHelper.Services
         /// <summary>
         /// Does the sales force authentication.
         /// </summary>
-        public async Task<SalesForceAuthResponse?> DoSalesForceAuth()
+        public virtual async Task<SalesForceAuthResponse?> DoSalesForceAuth()
         {
             const string methodName = "DoSalesForceAuth---";
             var salesForceTokenResponse = _cache.Get<SalesForceAuthResponse?>(SfAuthCacheName);
@@ -128,7 +128,7 @@ namespace BP.ACoE.ChatBotHelper.Services
         /// Generates the JWT with certificate file.
         /// </summary>
         /// <returns></returns>
-        public async Task<string?> GenerateJwtWithCertificateFile(object jwtPayload)
+        public virtual async Task<string?> GenerateJwtWithCertificateFile(object jwtPayload)
         {
             const string methodName = "GenerateJwtWithCertificateFile--";
             _logger.Information($"{ClassName}{methodName} started generating jwt with certificate file");
