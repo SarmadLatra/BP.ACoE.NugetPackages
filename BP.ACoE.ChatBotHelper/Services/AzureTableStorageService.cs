@@ -38,18 +38,18 @@ namespace BP.ACoE.ChatBotHelper.Services
             }
         }
 
-        public virtual async Task<BaseEntity> GetEntityByRowKey(string tableName, string rowKey)
+        public virtual async Task<T> GetEntityByRowKey<T>(string tableName, string rowKey) where T : BaseEntity, new()
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
-            return await tableClient.GetEntityAsync<BaseEntity>(_partitionKey, rowKey);
+            return await tableClient.GetEntityAsync<T>(_partitionKey, rowKey);
         }
 
-        public virtual async Task<IEnumerable<BaseEntity>> GetEntitiesByQuery(string tableName, string query, int maxPerPage = 100)
+        public virtual async Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, string query, int maxPerPage = 100) where T : BaseEntity, new()
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
-            var result = tableClient.QueryAsync<BaseEntity>(query, maxPerPage: maxPerPage);
+            var result = tableClient.QueryAsync<T>(query, maxPerPage);
             var pages = result.AsPages().GetAsyncEnumerator();
-            var data = new List<BaseEntity>();
+            var data = new List<T>();
             do
             {
                 data.AddRange(pages.Current.Values);
@@ -57,12 +57,12 @@ namespace BP.ACoE.ChatBotHelper.Services
             return data;
         }
 
-        public virtual async Task<IEnumerable<BaseEntity>> GetEntitiesByQuery(string tableName, Expression<Func<BaseEntity, bool>> query)
+        public virtual async Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, Expression<Func<T, bool>> query) where T : BaseEntity, new()
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
             var result = tableClient.QueryAsync(query);
             var pages = result.AsPages().GetAsyncEnumerator();
-            var data = new List<BaseEntity>();
+            var data = new List<T>();
             do
             {
                 data.AddRange(pages.Current.Values);
@@ -70,28 +70,28 @@ namespace BP.ACoE.ChatBotHelper.Services
             return data;
         }
 
-        public virtual async Task<BaseEntity> InsertEntity(string tableName, BaseEntity entity)
+        public virtual async Task<T> InsertEntity<T>(string tableName, T entity) where T : BaseEntity
         {
             var table = _serviceClient.GetTableClient(tableName);
             var result = await table.AddEntityAsync(entity);
-            if (!result.IsError) return result.Content.ToObjectFromJson<BaseEntity>();
+            if (!result.IsError) return result.Content.ToObjectFromJson<T>();
             _logger.Error($"Invalid Entity {entity.ToJson()} create response, {result.ReasonPhrase}");
             throw new HttpRequestException($"Invalid create merge response, {result.ReasonPhrase}");
         }
 
-        public virtual async Task<BaseEntity> UpdateEntity(string tableName, BaseEntity entity, TableUpdateMode updateMode = TableUpdateMode.Merge)
+        public virtual async Task<T> UpdateEntity<T>(string tableName, T entity, TableUpdateMode updateMode = TableUpdateMode.Merge) where T : BaseEntity
         {
             var table = _serviceClient.GetTableClient(tableName);
             var result = await table.UpdateEntityAsync(entity, ETag.All, updateMode);
-            if (!result.IsError) return result.Content.ToObjectFromJson<BaseEntity>();
+            if (!result.IsError) return result.Content.ToObjectFromJson<T>();
             _logger.Error($"Invalid Entity {entity.ToJson()} merge response, {result.ReasonPhrase}");
             throw new HttpRequestException($"Invalid Entity merge response, {result.ReasonPhrase}");
         }
 
-        public virtual BaseEntity GetEntityByConversationId(string tableName, string conversationId)
+        public virtual T GetEntityByConversationId<T>(string tableName, string conversationId) where T : BaseEntity, new()
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
-            var result = tableClient.QueryAsync<BaseEntity>($"PartitionKey eq '{_partitionKey}' and ConversationId eq '{conversationId}'", maxPerPage: 1);
+            var result = tableClient.QueryAsync<T>($"PartitionKey eq '{_partitionKey}' and ConversationId eq '{conversationId}'", maxPerPage: 1);
             var page = result.AsPages().GetAsyncEnumerator();
             var list = page.Current.Values;
             if (list.Any())

@@ -345,5 +345,47 @@ namespace BP.ACoE.ChatBotHelper.Services
                 throw new HttpRequestException(responseData);
             }
         }
+
+        public bool CheckLiveAgentsAvailability()
+        {
+            //DateTime userDateTime = GetUserDateTime();
+            //int dayOftheWeek = (int)DateTime.UtcNow.DayOfWeek;
+
+            //string allowedAgentTime = "";
+            //bool isDaylightSavingTime = IsDayLightSavingTime(userDateTime);
+            //if (dayOftheWeek != 6 && dayOftheWeek != 7)
+            //{
+            //    if (isDaylightSavingTime)
+            //    {
+            //        allowedAgentTime = _configuration.GetValue<string>("AllowedAgentTimeInDST");
+            //    }
+            //    else
+            //    {
+            //        allowedAgentTime = _configuration.GetValue<string>("AllowedAgentTime");
+            //    }
+            //}
+            ////Split From and To time 
+            //var agentFromTime = allowedAgentTime.Split('-').First();
+            //var agentToTime = allowedAgentTime.Split('-').Last();
+            //var space = " ";
+
+            //var availableStartTime = DateTime.Parse(userDateTime.ToShortDateString() + space + agentFromTime);
+            //var availableEndTime = DateTime.Parse(userDateTime.ToShortDateString() + space + agentToTime);
+
+            //if ((userDateTime >= availableStartTime) && (userDateTime <= availableEndTime)) { return true; }
+            //else { return false; }
+            return true;
+        }
+
+        public LiveAgentResponse SetOutOfOffice()
+        {
+            //LiveAgentResponse liveAgentResponse = new LiveAgentResponse();
+            //liveAgentResponse.Messages = new MessageElement[1];
+            //liveAgentResponse.Messages[0] = new MessageElement();
+            //liveAgentResponse.Messages[0].Status = _configuration["OutOfOfficeHours"];
+            //return liveAgentResponse;
+            return new LiveAgentResponse() { };
+        }
+
     }
 }
