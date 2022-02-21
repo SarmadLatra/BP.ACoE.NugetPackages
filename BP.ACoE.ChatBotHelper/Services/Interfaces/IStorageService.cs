@@ -10,7 +10,7 @@ namespace BP.ACoE.ChatBotHelper.Services.Interfaces
 
         Task<TableClient> GetStorageTableAsync(string tableName);
         Task<T> GetEntityByRowKey<T>(string tableName, string rowKey) where T : BaseEntity, new();
-        T GetEntityByConversationId<T>(string tableName, string conversationId) where T : BaseEntity, new();
+        Task<T> GetEntityByConversationId<T>(string tableName, string conversationId) where T : BaseEntity, new();
         Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, string query, int maxPerPage = 100) where T : BaseEntity, new();
         Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, Expression<Func<T, bool>> query) where T : BaseEntity, new();
         Task<T> InsertEntity<T>(string tableName, T entity) where T : BaseEntity;

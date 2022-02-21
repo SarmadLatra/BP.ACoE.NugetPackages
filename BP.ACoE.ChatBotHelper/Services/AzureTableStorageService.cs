@@ -22,7 +22,7 @@ namespace BP.ACoE.ChatBotHelper.Services
         }
 
 
-        public virtual  async Task<TableClient> GetStorageTableAsync(string tableName)
+        public virtual async Task<TableClient> GetStorageTableAsync(string tableName)
         {
 
             var tableClient = _serviceClient.GetTableClient(tableName);
@@ -47,27 +47,17 @@ namespace BP.ACoE.ChatBotHelper.Services
         public virtual async Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, string query, int maxPerPage = 100) where T : BaseEntity, new()
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
-            var result = tableClient.QueryAsync<T>(query, maxPerPage);
-            var pages = result.AsPages().GetAsyncEnumerator();
-            var data = new List<T>();
-            do
-            {
-                data.AddRange(pages.Current.Values);
-            } while (await pages.MoveNextAsync());
-            return data;
+            var result = tableClient.Query<T>(query);
+            await Task.Delay(0);
+            return result.ToList();
         }
 
         public virtual async Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, Expression<Func<T, bool>> query) where T : BaseEntity, new()
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
-            var result = tableClient.QueryAsync(query);
-            var pages = result.AsPages().GetAsyncEnumerator();
-            var data = new List<T>();
-            do
-            {
-                data.AddRange(pages.Current.Values);
-            } while (await pages.MoveNextAsync());
-            return data;
+            var result = tableClient.Query(query);
+            await Task.Delay(0);
+            return result.ToList();
         }
 
         public virtual async Task<T> InsertEntity<T>(string tableName, T entity) where T : BaseEntity
@@ -88,12 +78,12 @@ namespace BP.ACoE.ChatBotHelper.Services
             throw new HttpRequestException($"Invalid Entity merge response, {result.ReasonPhrase}");
         }
 
-        public virtual T GetEntityByConversationId<T>(string tableName, string conversationId) where T : BaseEntity, new()
+        public virtual async Task<T> GetEntityByConversationId<T>(string tableName, string conversationId) where T : BaseEntity, new()
         {
             var tableClient = _serviceClient.GetTableClient(tableName);
-            var result = tableClient.QueryAsync<T>($"PartitionKey eq '{_partitionKey}' and ConversationId eq '{conversationId}'", maxPerPage: 1);
-            var page = result.AsPages().GetAsyncEnumerator();
-            var list = page.Current.Values;
+            var result = tableClient.Query<T>($"PartitionKey eq '{_partitionKey}' and ConversationId eq '{conversationId}'", maxPerPage: 1);
+            await Task.Delay(0);
+            var list = result.ToList();
             if (list.Any())
             {
                 return list.First();
