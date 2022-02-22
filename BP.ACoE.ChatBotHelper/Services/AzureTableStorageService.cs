@@ -64,7 +64,7 @@ namespace BP.ACoE.ChatBotHelper.Services
         {
             var table = _serviceClient.GetTableClient(tableName);
             var result = await table.AddEntityAsync(entity);
-            if (!result.IsError) return result.Content.ToObjectFromJson<T>();
+            if (!result.IsError) return entity;
             _logger.Error($"Invalid Entity {entity.ToJson()} create response, {result.ReasonPhrase}");
             throw new HttpRequestException($"Invalid create merge response, {result.ReasonPhrase}");
         }
@@ -73,7 +73,7 @@ namespace BP.ACoE.ChatBotHelper.Services
         {
             var table = _serviceClient.GetTableClient(tableName);
             var result = await table.UpdateEntityAsync(entity, ETag.All, updateMode);
-            if (!result.IsError) return result.Content.ToObjectFromJson<T>();
+            if (!result.IsError) return entity;
             _logger.Error($"Invalid Entity {entity.ToJson()} merge response, {result.ReasonPhrase}");
             throw new HttpRequestException($"Invalid Entity merge response, {result.ReasonPhrase}");
         }
