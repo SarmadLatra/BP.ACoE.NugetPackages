@@ -345,6 +345,5 @@ namespace BP.ACoE.ChatBotHelper.Services
                 throw new HttpRequestException(responseData);
             }
         }
-
     }
 }

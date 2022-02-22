@@ -17,6 +17,5 @@ namespace BP.ACoE.ChatBotHelper.Services.Interfaces
         Task<LiveAgentResponse?> GetAvailableLiveAgents();
         Task SendTypingEventToAgent(string sessionKey, string affinityToken);
         Task SendNotTypingEventToAgent(string sessionKey, string affinityToken);
-
     }
 }
