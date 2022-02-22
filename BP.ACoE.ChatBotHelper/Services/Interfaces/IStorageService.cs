@@ -9,12 +9,12 @@ namespace BP.ACoE.ChatBotHelper.Services.Interfaces
         #region Table Storage Methods
 
         Task<TableClient> GetStorageTableAsync(string tableName);
-        Task<BaseEntity> GetEntityByRowKey(string tableName, string rowKey);
-        BaseEntity GetEntityByConversationId(string tableName, string conversationId);
-        Task<IEnumerable<BaseEntity>> GetEntitiesByQuery(string tableName, string query, int maxPerPage = 100);
-        Task<IEnumerable<BaseEntity>> GetEntitiesByQuery(string tableName, Expression<Func<BaseEntity, bool>> query);
-        Task<BaseEntity> InsertEntity(string tableName, BaseEntity entity);
-        Task<BaseEntity> UpdateEntity(string tableName, BaseEntity entity, TableUpdateMode updateMode = TableUpdateMode.Merge);
+        Task<T> GetEntityByRowKey<T>(string tableName, string rowKey) where T : BaseEntity, new();
+        Task<T> GetEntityByConversationId<T>(string tableName, string conversationId) where T : BaseEntity, new();
+        Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, string query, int maxPerPage = 100) where T : BaseEntity, new();
+        Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, Expression<Func<T, bool>> query) where T : BaseEntity, new();
+        Task<T> InsertEntity<T>(string tableName, T entity) where T : BaseEntity;
+        Task<T> UpdateEntity<T>(string tableName, T entity, TableUpdateMode updateMode = TableUpdateMode.Merge) where T : BaseEntity;
         Task<bool> RemoveEntity(string tableName, string rowKey);
 
         #endregion
