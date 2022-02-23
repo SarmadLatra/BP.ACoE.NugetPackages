@@ -1,47 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <Authors>mudasar.rauf1@bp.com</Authors>
-    <Company>BP</Company>
-    <Description>This package contains common API's for chatbot operations</Description>
-    <PackageReadmeFile>readme.MD</PackageReadmeFile>
-    <PackageTags>Chatbot;HelperAPI;SalesForce;MuleSoft;Azure Table Storage; Azure CosmosDB;</PackageTags>
-    <PackageReleaseNotes>first release</PackageReleaseNotes>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <RepositoryUrl>https://bp-vsts.visualstudio.com/RPA%20CoE/_git/000%20Pluto%20VA%20-%20Nuget</RepositoryUrl>
+	<TargetFramework>net6.0</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
+	<Authors>mudasar.rauf1@bp.com</Authors>
+	<Company>BP</Company>
+	<Description>This package contains common API's for chatbot operations</Description>
+	<PackageReadmeFile>readme.MD</PackageReadmeFile>
+	<PackageTags>Chatbot;HelperAPI;SalesForce;MuleSoft;Azure Table Storage; Azure CosmosDB;</PackageTags>
+	<PackageReleaseNotes>first release</PackageReleaseNotes>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<RepositoryUrl>https://bp-vsts.visualstudio.com/RPA%20CoE/_git/000%20Pluto%20VA%20-%20Nuget</RepositoryUrl>
+	<AssemblyVersion>1.0.0.1</AssemblyVersion>
+	<FileVersion>1.0.0.1</FileVersion>
+	  <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+	  <Version>1.0.1</Version>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.4.0" />
-    <PackageReference Include="JWT" Version="8.9.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.24.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Serilog" Version="2.10.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
-  </ItemGroup>
 
   <ItemGroup>
-    <None Update="readme.MD">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+	<PackageReference Include="Azure.Data.Tables" Version="12.4.0" />
+	<PackageReference Include="JWT" Version="8.9.0" />
+	<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
+	<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.Abstractions" Version="2.2.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+	<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+	<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+	<PackageReference Include="Microsoft.Azure.Cosmos" Version="3.24.0" />
+	<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+	<PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	<PackageReference Include="Serilog" Version="2.10.0" />
+	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+  </ItemGroup>
+
+
+	<ItemGroup>
+	<None Update="readme.MD">
+	  <Pack>True</Pack>
+	  <PackagePath>\</PackagePath>
+	</None>
   </ItemGroup>
 
 </Project>
