@@ -11,7 +11,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-
+  dotNetVersion: '6.x'
 steps:
 
 - task: UseDotNet@2
