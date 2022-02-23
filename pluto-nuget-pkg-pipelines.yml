@@ -1,0 +1,42 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  buildConfiguration: 'Release'
+  dotNetFramework: 'net6.0'
+  dotNetVersion: '6.0.x'
+  targetRuntime: 'win-x64'
+
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Install .NET Core SDK'
+  inputs:
+    version: $(dotNetVersion)
+    performMultiLevelLookup: true
+    includePreviewVersions: true # Required for preview versions
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'Build Application'
+- task: DotNetCoreCLI@2
+  displayName: Prepare the package
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/*.tests.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'PackageVersion'
+    arguments: '-t:pack'
+- task: DotNetCoreCLI@2
+  displayName: "Publish the package"
+  inputs:
+    command: push
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'https://bp-vsts.pkgs.visualstudio.com/67eaf4d2-2360-43e9-957e-1c7d67049d36/_packaging/Squad_Pluto_Feed/nuget/v3/index.json'
