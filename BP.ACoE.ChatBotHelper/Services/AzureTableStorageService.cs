@@ -33,7 +33,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             else
             {
                 var result = await _serviceClient.CreateTableIfNotExistsAsync(tableName);
-                _logger.Information($"azure table created for {result.Value.Name}");
+                _logger.Information($"azure table created for {result?.Value?.Name}");
                 return _serviceClient.GetTableClient(tableName);
             }
         }
@@ -49,7 +49,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             var tableClient = _serviceClient.GetTableClient(tableName);
             var result = tableClient.Query<T>(query);
             await Task.Delay(0);
-            return result.ToList();
+            return result?.ToList() ?? new List<T>();
         }
 
         public virtual async Task<IEnumerable<T>> GetEntitiesByQuery<T>(string tableName, Expression<Func<T, bool>> query) where T : BaseEntity, new()
@@ -57,7 +57,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             var tableClient = _serviceClient.GetTableClient(tableName);
             var result = tableClient.Query(query);
             await Task.Delay(0);
-            return result.ToList();
+            return result?.ToList() ?? new List<T>();
         }
 
         public virtual async Task<T> InsertEntity<T>(string tableName, T entity) where T : BaseEntity
@@ -83,7 +83,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             var tableClient = _serviceClient.GetTableClient(tableName);
             var result = tableClient.Query<T>($"PartitionKey eq '{_partitionKey}' and ConversationId eq '{conversationId}'", maxPerPage: 1);
             await Task.Delay(0);
-            var list = result.ToList();
+            var list = result?.ToList() ?? new List<T>();
             if (list.Any())
             {
                 return list.First();
