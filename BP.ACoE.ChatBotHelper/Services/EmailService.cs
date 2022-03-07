@@ -14,15 +14,13 @@ namespace BPMeAUChatBot.API.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration _configuration;
         private readonly IAzureAuthService _authService;
         private readonly ILogger _logger;
-        private readonly GraphApiAuthOptions _config;
+        private readonly GraphApiAuthSettings _config;
         private AccessTokenResponse? _authResponse;
 
-        public EmailService(IConfiguration configuration, ILogger logger, IOptions<GraphApiAuthOptions> options, IAzureAuthService authService)
+        public EmailService(ILogger logger, IOptions<GraphApiAuthSettings> options, IAzureAuthService authService)
         {
-            _configuration = configuration;
             _authService = authService;
             _logger = logger.ForContext<EmailService>();
             this._config = options.Value;
@@ -48,7 +46,7 @@ namespace BPMeAUChatBot.API.Services
 
             _logger.Information("just before sending the email");
 
-            await graphClient.Users[_configuration.GetValue<string>("EmailFromAddress")]
+            await graphClient.Users[mailMessage.From.EmailAddress.Address]
                 .SendMail(mailMessage, true)
                 .Request()
                 .PostAsync();

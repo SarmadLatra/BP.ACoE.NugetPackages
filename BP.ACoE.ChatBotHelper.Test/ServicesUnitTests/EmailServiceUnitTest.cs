@@ -22,7 +22,7 @@ namespace BPAURewardsChatBot.API.Tests.ServicesUnitTest.cs
         {
             var configurations = new Mock<IConfiguration>();
             var logger = new LoggerConfiguration().CreateLogger();
-            var graphApi = new Mock<IOptions<GraphApiAuthOptions>>();
+            var graphApi = new Mock<IOptions<GraphApiAuthSettings>>();
             var authService = new Mock<IAzureAuthService>();
 
 #pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
@@ -45,7 +45,7 @@ namespace BPAURewardsChatBot.API.Tests.ServicesUnitTest.cs
             EmailFromAddressMock.Setup(x => x.Value).Returns("mockemail@gmail.com");
             configurations.Setup(x => x.GetSection("EmailFromAddress")).Returns(EmailFromAddressMock.Object);
 
-            _ = graphApi.Setup(x => x.Value).Returns(new GraphApiAuthOptions()
+            _ = graphApi.Setup(x => x.Value).Returns(new GraphApiAuthSettings()
             {
                 ApiUrl = "mockUrl",
                 ClientId = "mockClientId",
@@ -53,7 +53,7 @@ namespace BPAURewardsChatBot.API.Tests.ServicesUnitTest.cs
                 Instance = "mockInstance",
                 Tenant = "mockTenant"
             });
-            var obj = new EmailService(configurations.Object, logger, graphApi.Object, authService.Object);
+            var obj = new EmailService(logger, graphApi.Object, authService.Object);
 
             Assert.ThrowsAsync<ServiceException>(async () => await obj.SendHtmlEmailAsync(new Microsoft.Graph.Message()));
         }

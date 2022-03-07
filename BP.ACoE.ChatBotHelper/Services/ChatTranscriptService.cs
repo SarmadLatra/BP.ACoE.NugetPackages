@@ -23,12 +23,15 @@ using System.Text.RegularExpressions;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using Microsoft.WindowsAzure.Storage.Table;
 using BPMeAUChatBot.API.Helpers;
+using BP.ACoE.ChatBotHelper.Settings;
+using Microsoft.Extensions.Options;
+using System.Reflection;
 
 namespace BPMeAUChatBot.API.Services
 {
     public class ChatTranscriptService : IChatTranscriptService
     {
-        private readonly IConfiguration _configuration;
+        private readonly ChatTranscriptSettings _chatTranscriptSettings;
         private readonly ILogger _logger;
         private readonly HttpClient _client;
         private readonly IStorageService _storageService;
@@ -40,17 +43,17 @@ namespace BPMeAUChatBot.API.Services
         private readonly string _tableName;
         private readonly string _partitionKey;
 
-        public ChatTranscriptService(IConfiguration configuration, ILogger logger, HttpClient client,
+        public ChatTranscriptService(IOptions<ChatTranscriptSettings> chatTranscriptSettings, ILogger logger, HttpClient client,
             IStorageService storageService, IEncryptionService decryption, IEmailService emailService, IChatTransactionService chatTransactionService, ITranscriptStore transcriptStore)
         {
-            _configuration = configuration;
+            _chatTranscriptSettings = chatTranscriptSettings.Value;
             _logger = logger.ForContext<ChatTranscriptService>();
             _client = client;
             _storageService = storageService;
             _decryptionService = decryption;
             _emailService = emailService;
-            _tableName = _configuration["SendTranscriptTable"];
-            _partitionKey = _configuration["PartitionKey"];
+            _tableName = _chatTranscriptSettings.SendTranscriptTable;
+            _partitionKey = _chatTranscriptSettings.PartitionKey;
             _chatTransactionService = chatTransactionService;
             _transcriptStore = transcriptStore;
         }
@@ -81,7 +84,7 @@ namespace BPMeAUChatBot.API.Services
         {
             var store = makeBlobsTranscriptStore();
             var transcript = await GetChatTranscriptFromStore(conversationId, store);
-            var botName = _configuration.GetValue<string>("ChatbotName");
+            var botName = _chatTranscriptSettings.ChatbotName;
             const string methodName = "GetChatBotTurnCountFromTranscriptAsync---";
             _logger.Information($"{ClassName}{methodName} -- Started");
 
@@ -102,31 +105,31 @@ namespace BPMeAUChatBot.API.Services
             var templatePath = "";
             if (seibelEntity.Type == "FORM_REWARDS" || seibelEntity.IssueType == "REWARDS_RELATED")
             {
-                templatePath = _configuration.GetValue<string>("RewardEmailTemplatePath");
+                templatePath = _chatTranscriptSettings.RewardEmailTemplatePath;
 
 
             }
             else if (seibelEntity.Type == "STATION_ISSUE_FORM" || seibelEntity.IssueType == "STATION_RELATED")
             {
-                templatePath = _configuration.GetValue<string>("StationEmailTemplatePath");
+                templatePath = _chatTranscriptSettings.StationEmailTemplatePath;
 
 
             }
             else if (seibelEntity.Type == "FLEET_FORM")
             {
-                templatePath = _configuration.GetValue<string>("GeneralFleetEmailTemplatePath");
+                templatePath = _chatTranscriptSettings.GeneralFleetEmailTemplatePath;
 
 
             }
             else if (seibelEntity.IssueType == "FLEET_RELATED")
             {
-                templatePath = _configuration.GetValue<string>("FleetEmailTemplatePath");
+                templatePath = _chatTranscriptSettings.FleetEmailTemplatePath;
 
 
             }
             else
             {
-                templatePath = _configuration.GetValue<string>("CustomerSupportEmailTemplatePath");
+                templatePath = _chatTranscriptSettings.CustomerSupportEmailTemplatePath;
 
             }
             if (!System.IO.File.Exists(templatePath)) throw new Exception("Email template was not found.");
@@ -206,8 +209,8 @@ namespace BPMeAUChatBot.API.Services
             }
 
             var dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-            var headerImageFullName = dirPath + _configuration.GetValue<string>("ChatTranscriptPDFHeaderImagePath");
-            var footerImageFullName = dirPath + _configuration.GetValue<string>("ChatTranscriptPDFFooterImagePath");
+            var headerImageFullName = dirPath + _chatTranscriptSettings.ChatTranscriptPDFHeaderImagePath;
+            var footerImageFullName = dirPath + _chatTranscriptSettings.ChatTranscriptPDFFooterImagePath;
 
             byte[] fileContents = PDFHelper.GeneratePdf(headerImageFullName, footerImageFullName, pdfContents);
             _logger.Information($"{ClassName}{methodName} -- Ended");
@@ -227,7 +230,7 @@ namespace BPMeAUChatBot.API.Services
             var chatStartTime = transcript.FirstOrDefault(x => x.Type == ActivityTypes.Message).Timestamp;
             var chatEndTime = transcript.LastOrDefault(x => x.Type == ActivityTypes.Message).Timestamp;
 
-            var timeZone = _configuration.GetValue<string>("TimeZone");
+            var timeZone = _chatTranscriptSettings.TimeZone;
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
 
             var chatStartDateTime = TimeZoneInfo.ConvertTimeFromUtc(chatStartTime.Value.UtcDateTime, timeZoneInfo);
@@ -324,17 +327,17 @@ namespace BPMeAUChatBot.API.Services
                 {
                     EmailAddress = new EmailAddress()
                     {
-                        Name = _configuration.GetValue<string>("ChatbotName"),
-                        Address = _configuration.GetValue<string>("EmailFromAddress")
+                        Name = _chatTranscriptSettings.ChatbotName,
+                        Address = _chatTranscriptSettings.EmailFromAddress
                     }
                 },
 
                 Body = new ItemBody() { ContentType = Microsoft.Graph.BodyType.Html, Content = emailTemplate },
                 HasAttachments = true,
-                Subject = (_configuration.GetValue<bool>("TestEnvironment") ? "Test-" : "") + "BP Rewards Virtual Assistant Chat Transcript-" + customerId
+                Subject = (_chatTranscriptSettings.TestEnvironment ? "Test-" : "") + "BP Rewards Virtual Assistant Chat Transcript-" + customerId
             };
 
-            _ = bool.TryParse(_configuration.GetValue<string>("SendCCEmail"), out bool isSendCCEmail);
+            _ = bool.TryParse(_chatTranscriptSettings.SendCCEmail, out bool isSendCCEmail);
             if (isSendCCEmail)
             {
 
@@ -342,7 +345,7 @@ namespace BPMeAUChatBot.API.Services
                 {
                     new Recipient
                     {
-                        EmailAddress = new EmailAddress() {Address = _configuration.GetValue<string>("EmailCCAddress")},
+                        EmailAddress = new EmailAddress() {Address = _chatTranscriptSettings.EmailCCAddress},
                     },
                     new Recipient
                     {
@@ -417,18 +420,18 @@ namespace BPMeAUChatBot.API.Services
                     {
                         EmailAddress = new EmailAddress()
                         {
-                            Name = _configuration["ChatbotName"],
-                            Address = _configuration["EmailFromAddress"]
+                            Name = _chatTranscriptSettings.ChatbotName,
+                            Address = _chatTranscriptSettings.EmailFromAddress
                         }
                     },
 
                     Body = new ItemBody() { ContentType = Microsoft.Graph.BodyType.Html, Content = emailTemplate },
                     HasAttachments = true,
-                    Subject = (_configuration.GetValue<bool>("TestEnvironment") ? "Test-" : "") + "BP Rewards Virtual Assistant Chat Transcript-" + customerId
+                    Subject = (_chatTranscriptSettings.TestEnvironment ? "Test-" : "") + "BP Rewards Virtual Assistant Chat Transcript-" + customerId
 
                 };
 
-                _ = bool.TryParse(_configuration.GetValue<string>("SendCCEmail"), out bool isSendCCEmail);
+                _ = bool.TryParse(_chatTranscriptSettings.SendCCEmail, out bool isSendCCEmail);
                 if (isSendCCEmail)
                 {
 
@@ -436,7 +439,7 @@ namespace BPMeAUChatBot.API.Services
                 {
                     new Recipient
                     {
-                        EmailAddress = new EmailAddress() {Address = _configuration.GetValue<string>("EmailCCAddress")},
+                        EmailAddress = new EmailAddress() {Address = _chatTranscriptSettings.EmailCCAddress},
                     }
                 };
                 }
@@ -470,7 +473,7 @@ namespace BPMeAUChatBot.API.Services
             _logger.Information($"{ClassName}{methodName} is called");
 
             //Get the TimeZone of the user
-            var timeZone = _configuration.GetValue<string>("TimeZone");
+            var timeZone = _chatTranscriptSettings.TimeZone;
             TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
 
             //Convert to UTC
@@ -479,18 +482,21 @@ namespace BPMeAUChatBot.API.Services
         }
 
 
-        private string GetEmailId(ChatBotSeibelEntity sendTranscriptEntity)
+        private string? GetEmailId(ChatBotSeibelEntity sendTranscriptEntity)
         {
             string key;
+
             if (sendTranscriptEntity.Type == "GENERAL_FORM")
-            {
                 key = sendTranscriptEntity.IssueType + "ToEmail";
-            }
             else
-            {
                 key = sendTranscriptEntity.Type + "ToEmail";
-            }
-            return _configuration[key.ToString()];
+
+            return GetPropertyValue(_chatTranscriptSettings, key).ToString();
+        }
+        public static object GetPropertyValue(object source, string propertyName)
+        {
+            PropertyInfo property = source.GetType().GetProperty(propertyName);
+            return property.GetValue(source, null);
         }
 
         async Task<IList<Activity>> IChatTranscriptService.GetChatTranscriptFromStore(string conversationId, ITranscriptStore store, string channelId)
@@ -541,7 +547,7 @@ namespace BPMeAUChatBot.API.Services
                     _logger.Information($"{ClassName}{methodName} called CalculateTimeSpan");
                     var addTicks = CalculateTimeSpan(formattedTimeStamp, lastTime);
                     string findColonInMessage;
-                    if (message.From?.Name?.ToLower().Contains(_configuration["ChatbotName"]) == true)
+                    if (message.From?.Name?.ToLower().Contains(_chatTranscriptSettings.ChatbotName) == true)
                     {
                         findColonInMessage = message.AsMessageActivity().Text.Length > 25
                             ? message.AsMessageActivity().Text?.Substring(0, 25)
@@ -549,7 +555,7 @@ namespace BPMeAUChatBot.API.Services
 
                         chatTranscript.Append(findColonInMessage?.Contains(":") == true
                             ? $"({addTicks}) {message.AsMessageActivity().Text}<br><br>"
-                            : $"({addTicks}) {_configuration["ChatBotTranscriptName"]}: {message.AsMessageActivity().Text}<br><br>");
+                            : $"({addTicks}) {_chatTranscriptSettings.ChatBotTranscriptName}: {message.AsMessageActivity().Text}<br><br>");
                     }
                     else
                     {
@@ -727,7 +733,7 @@ namespace BPMeAUChatBot.API.Services
             var chatStartTime = transcript.FirstOrDefault(x => x.Type == ActivityTypes.Message).Timestamp;
             var chatEndTime = transcript.LastOrDefault(x => x.Type == ActivityTypes.Message).Timestamp;
 
-            var timeZone = _configuration.GetValue<string>("TimeZone");
+            var timeZone = _chatTranscriptSettings.TimeZone;
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
 
             var chatStartDateTime = TimeZoneInfo.ConvertTimeFromUtc(chatStartTime.Value.UtcDateTime, timeZoneInfo);
@@ -750,7 +756,7 @@ namespace BPMeAUChatBot.API.Services
                 _logger.Information($"{ClassName}{methodName} called CalculateTimeSpan");
                 var addTicks = CalculateTimeSpan(formattedTimeStamp, chatStartDateTime);
                 string findColonInMessage;
-                if (message.From?.Name?.ToLower().Contains(_configuration["ChatbotName"]) == true)
+                if (message.From?.Name?.ToLower().Contains(_chatTranscriptSettings.ChatbotName) == true)
                 {
                     findColonInMessage = message.AsMessageActivity().Text.Length > 25
                         ? message.AsMessageActivity().Text?.Substring(0, 25)
@@ -758,7 +764,7 @@ namespace BPMeAUChatBot.API.Services
 
                     chatTranscript.Append(findColonInMessage?.Contains(":") == true
                         ? $"({addTicks}) {message.AsMessageActivity().Text}<br><br>"
-                        : $"({addTicks}) {_configuration["ChatBotTranscriptName"]}: {message.AsMessageActivity().Text}<br><br>");
+                        : $"({addTicks}) {_chatTranscriptSettings.ChatBotTranscriptName}: {message.AsMessageActivity().Text}<br><br>");
                 }
                 else
                 {
@@ -801,7 +807,7 @@ namespace BPMeAUChatBot.API.Services
             var chatStartTime = transcript.FirstOrDefault(x => x.Type == ActivityTypes.Message).Timestamp;
             var chatEndTime = transcript.LastOrDefault(x => x.Type == ActivityTypes.Message).Timestamp;
 
-            var timeZone = _configuration.GetValue<string>("TimeZone");
+            var timeZone = _chatTranscriptSettings.TimeZone;
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
 
             var chatStartDateTime = TimeZoneInfo.ConvertTimeFromUtc(chatStartTime.Value.UtcDateTime, timeZoneInfo);
@@ -824,7 +830,7 @@ namespace BPMeAUChatBot.API.Services
 
         private async Task<string> LoadEmailTemplate()
         {
-            var templatePath = _configuration.GetValue<string>("EmailTemplatePath");
+            var templatePath = _chatTranscriptSettings.EmailTemplatePath;
             if (!System.IO.File.Exists(templatePath)) throw new Exception("Email template was not found.");
             var emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
             return emailTemplate;

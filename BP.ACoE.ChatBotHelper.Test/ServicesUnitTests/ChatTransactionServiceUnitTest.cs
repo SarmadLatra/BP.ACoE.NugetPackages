@@ -1,8 +1,10 @@
 ﻿using BP.ACoE.ChatBotHelper.Services.Interfaces;
+using BP.ACoE.ChatBotHelper.Settings;
 using BPMeAUChatBot.API.Models;
 using BPMeAUChatBot.API.Services;
 using BPMeAUChatBot.API.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 using Serilog;
 using System.Net.Http;
@@ -19,7 +21,12 @@ namespace BPAURewardsChatBot.API.Tests.ServicesUnitTest.cs
             var configuration = new Mock<IConfiguration>();
             var mockChatTxTable = new Mock<IConfigurationSection>();
             var mockPartitionKey = new Mock<IConfigurationSection>();
-
+            var mockSettings = new Mock<IOptions<ChatTransactionSettings>>();
+            mockSettings.Setup(x => x.Value).Returns(new ChatTransactionSettings()
+            {
+                ChatTxTable = "mockTable",
+                PartitionKey = "mockKey"
+            });
             var mockLogger = new LoggerConfiguration().CreateLogger();
             var mockStorageService = new Mock<IStorageService>();
 
@@ -46,7 +53,7 @@ namespace BPAURewardsChatBot.API.Tests.ServicesUnitTest.cs
             configuration.Setup(x => x.GetSection("ChatTxTable")).Returns(mockChatTxTable.Object);
             configuration.Setup(x => x.GetSection("PartitionKey")).Returns(mockPartitionKey.Object);
 
-            var chatTransactionService = new ChatTransactionService(configuration.Object, mockLogger, mockStorageService.Object);
+            var chatTransactionService = new ChatTransactionService(mockSettings.Object, mockLogger, mockStorageService.Object);
 
             var result = await chatTransactionService.GetTransactionByConversationId("fakeConversationId");
 

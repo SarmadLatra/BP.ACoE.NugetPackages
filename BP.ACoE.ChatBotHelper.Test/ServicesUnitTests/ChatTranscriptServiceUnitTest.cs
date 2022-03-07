@@ -1,10 +1,12 @@
 ﻿using BP.ACoE.ChatBotHelper.Services.Interfaces;
+using BP.ACoE.ChatBotHelper.Settings;
 using BPMeAUChatBot.API.Models;
 using BPMeAUChatBot.API.Services;
 using BPMeAUChatBot.API.Services.Interfaces;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Moq;
 using Serilog;
@@ -29,74 +31,51 @@ namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
             var mockChatTranscriptService = new Mock<IChatTranscriptService>();
             var mockTranscriptStoreService = new Mock<ITranscriptStore>();
             var mockFuncTranscriptStoreService = new Mock<Func<ITranscriptStore>>();
+            var mockSettings = new Mock<IOptions<ChatTranscriptSettings>>();
 
             var azureStorageMock = new Mock<IConfigurationSection>();
             var azureBlobMock = new Mock<IConfigurationSection>();
-            var ChatTranscriptPDFHeaderImagePathMock = new Mock<IConfigurationSection>();
-            var ChatTranscriptPDFFooterImagePathMock = new Mock<IConfigurationSection>();
-            var TimeZoneMock = new Mock<IConfigurationSection>();
+            mockSettings.Setup(x => x.Value).Returns(new ChatTranscriptSettings()
+            {
+                ChatbotName = "devraubotsvc",
+                SendTranscriptTable = "mock",
+                PartitionKey = "mock",
+                RewardEmailTemplatePath = "mock",
+                StationEmailTemplatePath = "mock",
+                GeneralFleetEmailTemplatePath = "mock",
+                FleetEmailTemplatePath = "mock",
+                CustomerSupportEmailTemplatePath = "mock",
+                ChatTranscriptPDFHeaderImagePath = "mock",
+                ChatTranscriptPDFFooterImagePath = "mock",
+                TimeZone = "AUS Eastern Standard Time",
+                EmailFromAddress = "mock",
+                TestEnvironment = true,
+                SendCCEmail = "true",
+                EmailCCAddress = "anant.kulkarni@bp.com",
+                ChatBotTranscriptName = "Virtual Assistant",
+                EmailTemplatePath = "templates/transcriptEmail.txt",
 
-            var RewardEmailTemplatePathMock = new Mock<IConfigurationSection>();
-            var StationEmailTemplatePathMock = new Mock<IConfigurationSection>();
-            var GeneralFleetEmailTemplatePathMock = new Mock<IConfigurationSection>();
-            var FleetEmailTemplatePathMock = new Mock<IConfigurationSection>();
-            var CustomerSupportEmailTemplatePathMock = new Mock<IConfigurationSection>();
-            var EmailTemplatePathMock = new Mock<IConfigurationSection>();
-
-            var ChatbotNameMock = new Mock<IConfigurationSection>();
-            var EmailFromAddressMock = new Mock<IConfigurationSection>();
-            var TestEnvironmentMock = new Mock<IConfigurationSection>();
-            var SendCCEmailMock = new Mock<IConfigurationSection>();
-            var SendEmailCCMock = new Mock<IConfigurationSection>();
-
+                FLEET_FORMToEmail = "mock@bp.com",
+                REWARD_FORMToEmail = "mock@bp.com",
+                PAYMENT_FORMToEmail = "mock@bp.com",
+                APP_TECH_FORMToEmail = "mock@bp.com",
+                CHANGE_EMAIL_FORMToEmail = "mock@bp.com",
+                CLOSE_ACCOUNT_FORMToEmail = "mock@bp.com",
+                STATION_ISSUE_FORMToEmail = "mock@bp.com",
+                CLICKCOLLECT_RELATEDToEmail = "mock@bp.com",
+                ACCOUNT_RELATEDToEmail = "mock@bp.com",
+                PAYMENT_RELATEDToEmail = "mock@bp.com",
+                REWARDS_RELATEDToEmail = "mock@bp.com",
+                STATION_RELATEDToEmail = "mock@bp.com",
+                APP_RELATEDToEmail = "mock@bp.com",
+                OTHER_QUERYToEmail = "mock@bp.com",
+                FLEET_RELATEDToEmail = "mock@bp.com"
+            });
             mockIChatTranscriptStore.Setup(x => x.GetTranscriptActivitiesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()))
             .ReturnsAsync(new PagedResult<IActivity>()
             {
                 ContinuationToken = null,
             });
-
-            EmailTemplatePathMock.Setup(x => x.Value).Returns("templates/transcriptEmail.txt");
-            configuration.Setup(x => x.GetSection("EmailTemplatePath")).Returns(EmailTemplatePathMock.Object);
-
-            ChatbotNameMock.Setup(x => x.Value).Returns("mockChatBotName");
-            configuration.Setup(x => x.GetSection("ChatbotName")).Returns(ChatbotNameMock.Object);
-
-            EmailFromAddressMock.Setup(x => x.Value).Returns("mockEmailId");
-            configuration.Setup(x => x.GetSection("EmailFromAddress")).Returns(EmailFromAddressMock.Object);
-
-            TestEnvironmentMock.Setup(x => x.Value).Returns("false");
-            configuration.Setup(x => x.GetSection("TestEnvironment")).Returns(TestEnvironmentMock.Object);
-
-            SendCCEmailMock.Setup(x => x.Value).Returns("true");
-            configuration.Setup(x => x.GetSection("SendCCEmail")).Returns(SendCCEmailMock.Object);
-
-            SendEmailCCMock.Setup(x => x.Value).Returns("mockCCEmail");
-            configuration.Setup(x => x.GetSection("EmailCCAddress")).Returns(SendEmailCCMock.Object);
-
-            RewardEmailTemplatePathMock.Setup(x => x.Value).Returns("templates/RewardsEmail.txt");
-            configuration.Setup(x => x.GetSection("RewardEmailTemplatePath")).Returns(RewardEmailTemplatePathMock.Object);
-
-            StationEmailTemplatePathMock.Setup(x => x.Value).Returns("templates/CarelineEmail.txt");
-            configuration.Setup(x => x.GetSection("StationEmailTemplatePath")).Returns(StationEmailTemplatePathMock.Object);
-
-            GeneralFleetEmailTemplatePathMock.Setup(x => x.Value).Returns("templates/GeneralFleet.txt");
-            configuration.Setup(x => x.GetSection("GeneralFleetEmailTemplatePath")).Returns(GeneralFleetEmailTemplatePathMock.Object);
-
-            FleetEmailTemplatePathMock.Setup(x => x.Value).Returns("templates/FleetEmail.txt");
-            configuration.Setup(x => x.GetSection("FleetEmailTemplatePath")).Returns(FleetEmailTemplatePathMock.Object);
-
-            CustomerSupportEmailTemplatePathMock.Setup(x => x.Value).Returns("templates/FleetEmail.txt");
-            configuration.Setup(x => x.GetSection("CustomerSupportEmailTemplatePath")).Returns(CustomerSupportEmailTemplatePathMock.Object);
-
-            TimeZoneMock.Setup(x => x.Value).Returns("AUS Eastern Standard Time");
-            configuration.Setup(x => x.GetSection("TimeZone")).Returns(TimeZoneMock.Object);
-
-            ChatTranscriptPDFHeaderImagePathMock.Setup(x => x.Value).Returns("\\templates\\TemplateHeader.png");
-            configuration.Setup(x => x.GetSection("ChatTranscriptPDFHeaderImagePath")).Returns(ChatTranscriptPDFHeaderImagePathMock.Object);
-
-            ChatTranscriptPDFFooterImagePathMock.Setup(x => x.Value).Returns("\\templates\\TemplateFooter.png");
-            configuration.Setup(x => x.GetSection("ChatTranscriptPDFFooterImagePath")).Returns(ChatTranscriptPDFFooterImagePathMock.Object);
-
             azureStorageMock.Setup(x => x.Value).Returns("mock");
             configuration.Setup(x => x.GetSection("AzureStorageConnectionString")).Returns(azureStorageMock.Object);
 
@@ -125,7 +104,7 @@ namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
              });
             mockEmailService.Setup(x => x.SendHtmlEmailAsync(It.IsAny<Message>()));
 
-            var obj = new ChatTranscriptService(configuration.Object, mockLogger, mockHttpClient.Object, mockStorageService.Object,
+            var obj = new ChatTranscriptService(mockSettings.Object, mockLogger, mockHttpClient.Object, mockStorageService.Object,
                                                 mockEncryptionService.Object, mockEmailService.Object, mockChatTransactionService.Object, mockTranscriptStoreService.Object);
 
             var output1 = obj.GetBlobsTranscriptStore();

@@ -3,7 +3,7 @@ using static System.String;
 
 namespace BPMeAUChatBot.API.Settings
 {
-    public class GraphApiAuthOptions
+    public class GraphApiAuthSettings
     {
         /// <summary>
         /// instance of Azure AD, for example public Azure or a Sovereign cloud (Azure China, Germany, US government, etc ...)
@@ -21,17 +21,17 @@ namespace BPMeAUChatBot.API.Settings
         /// or a domain name associated with the tenant
         /// - or 'organizations' (for a multi-tenant application)
         /// </summary>
-        public string Tenant { get; set; }
+        public string? Tenant { get; set; }
 
         /// <summary>
         /// Guid used by the application to uniquely identify itself to Azure AD
         /// </summary>
-        public string ClientId { get; set; }
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// URL of the authority
         /// </summary>
-        public string Authority => Format(CultureInfo.InvariantCulture, Instance, Tenant);
+        public string? Authority => Format(CultureInfo.InvariantCulture, Instance, Tenant);
 
         /// <summary>
         /// Client secret (application password)
@@ -41,6 +41,6 @@ namespace BPMeAUChatBot.API.Settings
         /// or a certificate previously shared with AzureAD during the application registration 
         /// (and identified by the CertificateName property belows)
         /// <remarks> 
-        public string ClientSecret { get; set; }
+        public string? ClientSecret { get; set; }
     }
 }

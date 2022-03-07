@@ -3,22 +3,24 @@ using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using BP.ACoE.ChatBotHelper.Settings;
 using BPMeAUChatBot.API.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace BPMeAUChatBot.API.Services
 {
     public class EncryptionService : IEncryptionService
     {
-        private readonly IConfiguration _configuration;
+        private readonly EncryptionSettings _encryptionSettings;
         private readonly ILogger _logger;
 
         private const string ClassName = "DecryptionService--";
 
-        public EncryptionService(IConfiguration configuration, ILogger logger)
+        public EncryptionService(IOptions<EncryptionSettings> encryptionSettings, ILogger logger)
         {
-            _configuration = configuration;
+            _encryptionSettings = encryptionSettings.Value;
             _logger = logger.ForContext<EncryptionService>();
         }
 
@@ -28,7 +30,7 @@ namespace BPMeAUChatBot.API.Services
 
             const string methodName = "Encrypt--";
             _logger.Information($"{ClassName}{methodName} encryption process started");
-            var encryptionKey = _configuration.GetValue<string>("EncryptionKey");
+            var encryptionKey = _encryptionSettings.EncryptionKey;
             var clearBytes = Encoding.Unicode.GetBytes(text);
             using var aes = Aes.Create();
             var pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
@@ -52,7 +54,7 @@ namespace BPMeAUChatBot.API.Services
         {
             const string methodName = "Decrypt--";
             _logger.Information($"{ClassName}{methodName} decryption process started");
-            var encryptionKey = _configuration.GetValue<string>("EncryptionKey");
+            var encryptionKey = _encryptionSettings.EncryptionKey;
             text = text.Replace(" ", "+");
             var cipherBytes = Convert.FromBase64String(text);
             using var aes = Aes.Create();

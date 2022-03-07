@@ -3,10 +3,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
+using BP.ACoE.ChatBotHelper.Settings;
 using BPMeAUChatBot.API.Models;
 using BPMeAUChatBot.API.Services.Interfaces;
 using BPMeAUChatBot.API.ViewModels;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage.Table;
 using Serilog;
 
@@ -16,17 +18,18 @@ namespace BPMeAUChatBot.API.Services
     {
         private readonly ILogger _logger;
         private readonly IStorageService _storageService;
+        private readonly ChatTransactionSettings _chatTransactionSettings;
         private readonly string _tableName;
         private readonly string _partitionKey;
         private const string ClassName = "ChatTransactionService--";
         private const string _jobQueue = "txqueue";
-        public ChatTransactionService(IConfiguration configuration, ILogger logger, IStorageService storageService)
+        public ChatTransactionService(IOptions<ChatTransactionSettings> chatTransactionSettings, ILogger logger, IStorageService storageService)
         {
-            var configuration1 = configuration;
+            _chatTransactionSettings = chatTransactionSettings.Value;
             _logger = logger.ForContext<ChatTransactionService>();
             _storageService = storageService;
-            _tableName = configuration1.GetValue<string>("ChatTxTable");
-            _partitionKey = configuration1.GetValue<string>("PartitionKey");
+            _tableName = _chatTransactionSettings.ChatTxTable;
+            _partitionKey = _chatTransactionSettings.PartitionKey;
         }
         public async Task<ChatbotTransactionEntity> GetTransactionByConversationId(string conversationId, string userId = "")
         {

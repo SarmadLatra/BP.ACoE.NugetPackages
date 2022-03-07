@@ -181,7 +181,7 @@ This service contains the methods to send email.
 Configuration settings 
 ```
     {
-       "GraphApi": {
+       "GraphApiAuthSettings": {
             "Instance": "https://login.microsoftonline.com/{0}/oauth2/v2.0/token",
             "Tenant": "{value for Tenant}",
             "ClientId": "{value for ClientId}",
@@ -192,8 +192,8 @@ Configuration settings
 Inject the service in startup.cs like
 ```
 
- services.AddOptions<GraphApiAuthOptions>()
-                .Bind(Configuration.GetSection("GraphApi"))
+ services.AddOptions<GraphApiAuthSettings>()
+                .Bind(Configuration.GetSection("GraphApiAuthSettings"))
                 .ValidateDataAnnotations();
 
 // Depends on IConfiguration, Serilog Logger, IOptions<GraphApiAuthOptions> and IAzureAuthService service
@@ -205,12 +205,20 @@ Inject the service in startup.cs like
 ## ChatTransaction Service
 
 This service contains the methods related to get transaction by conversationId.
-
+```
+    {
+       "ChatTransactionSettings": {
+            "ChatTxTable": "{value for ChatTxTable}",
+            "PartitionKey": "{value for PartitionKey}"
+        }
+    }
+```
 Inject the service in startup.cs like
 ```
 
 // Depends on IConfiguration configuration, ILogger logger, IStorageService storageService
 
+services.Configure<ChatTransactionSettings>(configuration.GetSection("ChatTransactionSettings"));
 services.AddScoped<IChatTransactionService, ChatTransactionService>();
 
 ```
@@ -218,13 +226,51 @@ services.AddScoped<IChatTransactionService, ChatTransactionService>();
 ## ChatTranscript Service
 
 This service contains the methods related to chat transcripts.
-
+```
+    {
+        "ChatTranscriptSettings": {
+            "ChatbotName": "{value for ChatbotName}",
+            "SendTranscriptTable": {value for SendTranscriptTable},
+            "PartitionKey": {value for PartitionKey},
+            "RewardEmailTemplatePath": {value for RewardEmail Template Path},
+            "StationEmailTemplatePath": {value for StationEmail Template Path},
+            "GeneralFleetEmailTemplatePath": {value for GeneralFleetEmail Template Path},
+            "FleetEmailTemplatePath": {value for FleetEmail Template Path},
+            "CustomerSupportEmailTemplatePath": {value for CustomerSupportEmail Template Path},
+            "ChatTranscriptPDFHeaderImagePath": {value for ChatTranscriptPDFHeaderImagePath},
+            "ChatTranscriptPDFFooterImagePath": {value for ChatTranscriptPDFFooterImagePath},
+            "TimeZone": {value for Time Zone},
+            "EmailFromAddress": {value for Email From Address},
+            "TestEnvironment": {value for Environment},
+            "SendCCEmail": {value for SendCCEmail},
+            "EmailCCAddress": {value for EmailCCAddress},
+            "ChatBotTranscriptName": {value for ChatBot Transcript Name},
+            "EmailTemplatePath": {value for Email Template Path},
+            "FLEET_FORMToEmail": {value for FLEET_FORMToEmail},
+            "REWARD_FORMToEmail": {value for REWARD_FORMToEmail},
+            "PAYMENT_FORMToEmail": {value for PAYMENT_FORMToEmail},
+            "APP_TECH_FORMToEmail": {value for APP_TECH_FORMToEmail},
+            "CHANGE_EMAIL_FORMToEmail": {value for CHANGE_EMAIL_FORMToEmail},
+            "CLOSE_ACCOUNT_FORMToEmail": {value for CLOSE_ACCOUNT_FORMToEmail},
+            "STATION_ISSUE_FORMToEmail": {value for STATION_ISSUE_FORMToEmail},
+            "CLICKCOLLECT_RELATEDToEmail": {value for CLICKCOLLECT_RELATEDToEmail},
+            "ACCOUNT_RELATEDToEmail": {value for ACCOUNT_RELATEDToEmail},
+            "PAYMENT_RELATEDToEmail": {value for PAYMENT_RELATEDToEmail},
+            "REWARDS_RELATEDToEmail": {value for REWARDS_RELATEDToEmail},
+            "STATION_RELATEDToEmail": {value for STATION_RELATEDToEmail},
+            "APP_RELATEDToEmail": {value for APP_RELATEDToEmail},
+            "OTHER_QUERYToEmail": {value for OTHER_QUERYToEmail},
+            "FLEET_RELATEDToEmail": {value for FLEET_RELATEDToEmail}
+  }
+    }
+```
 Inject the service in startup.cs like
 ```
 
 // Depends on IConfiguration, Serilog Logger,HttpClient client, IStorageService storageService, IEncryptionService decryption,
 IEmailService emailService,IChatTransactionService chatTransactionService, ITranscriptStore transcriptStore
 
+services.Configure<ChatTranscriptSettings>(configuration.GetSection("ChatTranscriptSettings"));
 services.AddScoped<IChatTranscriptService, ChatTranscriptService>();
 
 ```
@@ -232,12 +278,19 @@ services.AddScoped<IChatTranscriptService, ChatTranscriptService>();
 ## Encryption Service
 
 This service contains the methods related to encryption and decryption.
-
+```
+    {
+       "EncryptionSettings": {
+            "EncryptionKey": "{value for EncryptionKey}"
+  }
+    }
+```
 Inject the service in startup.cs like
 ```
 
 // Depends on IConfiguration, Serilog Logger
 
+services.Configure<EncryptionSettings>(configuration.GetSection("EncryptionSettings"));
 services.AddScoped<IEncryptionService, EncryptionService>();
 
 ```
