@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head>
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type="text/css" media="screen">
+		a:link { color:#009900; text-decoration: underline; }
+		a:visited { color:#666666; text-decoration: none; }
+		a:hover { color:#009900; text-decoration: none; }
+		a:active { color:#009900; text-decoration: underline; }
+		</style>
+    
+  
+</head>
+<body style="margin: 0; padding: 0; width: 100%;">
+<!-- Start Header -->
+<div style="font-family: Arial, Helvetica, sans-serif; color: #fff; width: 100%; background-color: #009900; margin: auto; padding: 25px; font-weight: bold; font-size: 20px;">BP<span style="font-weight: normal;">me</span><br></div>
+<!-- End Header -->
+<!-- Start Body Transcript -->
+<!-- Start Body Transcript -->
+<div style="font-family: Arial, Helvetica, sans-serif; width: 98%; margin: auto; padding: 20px; font-size: 14px;">
+	<span style="color: #000000;">
+  <p> <span style="color: #000000;">Kindly do not "<strong>Reply</strong>" or "<strong>Reply All</strong>" as this is a system generated email.<br>
+	  <br>
+	  <br>
+	  <br>
+	  <span style="color: #000000;">Hello $vCustomerName$,<br>
+	    <br>
+	    Thank you for connecting with our virtual assistant.&nbsp;</span></span></p>
+	<p><span style="color: #000000;"><span style="color: #000000;">A copy of your chat transcript is attached, and the query description you submitted is below:
+      <br><br><strong>General Enquiry</strong><br>
+
+<br>Please select one of the options from the drop down below and add a short description in the &#39;Additional comments&#39; section. Once submitted, one of our members from our customer service team will get back to you within 2 working days.
+<br>
+
+
+<br><strong>Please select one of the options:</strong><br>
+<br>
+	      $vOptionss$</span><br>
+	  <br>
+<br><strong>Additional comments:</strong><br>
+	  <br>
+	      $vComments$</span><br>
+	  <br> <br>
+	  <!-- Start footer -->
+	  
+	  Kind Regards,	  </span><br>
+	  <br>
+	  <span style="color: #009900;">Careline<br>
+	    <br>
+    </span> <span style="color: #000000;">Phone:&nbsp; 0800 402 402</span>
+	  <span style="color: #000000;"><span style="color: #000000;">&nbsp;</span><br>
+    </span></span></p>
+
+</div>
+<!-- End footer -->
+
+</body>
+</html>
