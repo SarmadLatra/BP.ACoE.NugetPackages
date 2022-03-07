@@ -30,7 +30,14 @@ namespace BPMeAUChatBot.API.Services
 
         public async Task SendHtmlEmailAsync(Message mailMessage)
         {
-            await MakeAzureAuthResponse();
+            await MakeAzureAuthResponse(new AzureAuthSettings()
+            {
+                IsScope = true,
+                ClientId = _config.ClientId,
+                ClientSecret = _config.ClientSecret,
+                GrantType = "client_credentials",
+                Scope = $"{_config.ApiUrl}.default"
+            });
             var graphClient = new GraphServiceClient(new DelegateAuthenticationProvider((requestMessage) =>
             {
                 requestMessage
@@ -49,22 +56,10 @@ namespace BPMeAUChatBot.API.Services
             _logger.Information("Email is sent");
         }
 
-        private async Task MakeAzureAuthResponse()
+        private async Task MakeAzureAuthResponse(AzureAuthSettings authSettings)
         {
             if (_authResponse != null || string.IsNullOrEmpty(_authResponse?.AccessToken))
-            {
-                var config = new AzureAuthSettings()
-                {
-                    IsScope = true,
-                    ClientId = _config.ClientId,
-                    ClientSecret = _config.ClientSecret,
-                    GrantType = "client_credentials",
-                    //Tenant = _config.Tenant,
-                    //Instance = _config.Instance,
-                    Scope = $"{_config.ApiUrl}.default"
-                };
-                _authResponse = await _authService.GetAzureAuthToken(config);
-            }
+                _authResponse = await _authService.GetAzureAuthToken(authSettings);
         }
     }
 }

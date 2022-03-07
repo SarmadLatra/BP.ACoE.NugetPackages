@@ -173,3 +173,71 @@ Use the extension method ```.ToJson()``` to get serialized version of any object
     {object}.ToDictionary()
 ```
 user this extension mehtod to convert any object to dictionary.
+
+
+## Email Service
+
+This service contains the methods to send email.
+Configuration settings 
+```
+    {
+       "GraphApi": {
+            "Instance": "https://login.microsoftonline.com/{0}/oauth2/v2.0/token",
+            "Tenant": "{value for Tenant}",
+            "ClientId": "{value for ClientId}",
+            "ClientSecret": "{value for SecretId}"
+        }
+    }
+```
+Inject the service in startup.cs like
+```
+
+ services.AddOptions<GraphApiAuthOptions>()
+                .Bind(Configuration.GetSection("GraphApi"))
+                .ValidateDataAnnotations();
+
+// Depends on IConfiguration, Serilog Logger, IOptions<GraphApiAuthOptions> and IAzureAuthService service
+
+ services.AddScoped<IEmailService, EmailService>();
+
+```
+
+## ChatTransaction Service
+
+This service contains the methods related to get transaction by conversationId.
+
+Inject the service in startup.cs like
+```
+
+// Depends on IConfiguration configuration, ILogger logger, IStorageService storageService
+
+services.AddScoped<IChatTransactionService, ChatTransactionService>();
+
+```
+
+## ChatTranscript Service
+
+This service contains the methods related to chat transcripts.
+
+Inject the service in startup.cs like
+```
+
+// Depends on IConfiguration, Serilog Logger,HttpClient client, IStorageService storageService, IEncryptionService decryption,
+IEmailService emailService,IChatTransactionService chatTransactionService, ITranscriptStore transcriptStore
+
+services.AddScoped<IChatTranscriptService, ChatTranscriptService>();
+
+```
+
+## Encryption Service
+
+This service contains the methods related to encryption and decryption.
+
+Inject the service in startup.cs like
+```
+
+// Depends on IConfiguration, Serilog Logger
+
+services.AddScoped<IEncryptionService, EncryptionService>();
+
+```
