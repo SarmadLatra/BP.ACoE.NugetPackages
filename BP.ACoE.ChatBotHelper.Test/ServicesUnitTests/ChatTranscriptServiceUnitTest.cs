@@ -107,7 +107,6 @@ namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
             var obj = new ChatTranscriptService(mockSettings.Object, mockLogger, mockHttpClient.Object, mockStorageService.Object,
                                                 mockEncryptionService.Object, mockEmailService.Object, mockChatTransactionService.Object, mockTranscriptStoreService.Object);
 
-            var output1 = obj.GetBlobsTranscriptStore();
             var output2 = await obj.GetChatTranscriptFromStore("mockConversationId", mockIChatTranscriptStore.Object, "mockChannel");
             _ = await Assert.ThrowsAsync<QuestPDF.Drawing.Exceptions.DocumentComposeException>(() => obj.SendChatTranscriptAsync(new Models.ChatBotSeibelEntity()
             {

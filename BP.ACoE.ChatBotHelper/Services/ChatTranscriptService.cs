@@ -58,12 +58,6 @@ namespace BPMeAUChatBot.API.Services
             _transcriptStore = transcriptStore;
         }
 
-
-        public ITranscriptStore GetBlobsTranscriptStore()
-        {
-            return _transcriptStore;
-        }
-
         public async Task<List<IActivity>> GetChatTranscriptFromStore(string conversationId, ITranscriptStore store, string channelId = "directline")
         {
             string pageToken = null;
@@ -251,12 +245,12 @@ namespace BPMeAUChatBot.API.Services
             return transcriptDto;
         }
 
-        public async Task<string> GetFirstIntentAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore)
+        public async Task<string> GetFirstIntentAsync(string conversationId, ITranscriptStore makeBlobsTranscriptStore)
         {
             const string methodName = "GetFirstIntent---";
             _logger.Information($"{ClassName}{methodName} -- Started");
             var defaultMessage = "Customer has not selected or typed anything.";
-            var transcript = await GetChatTranscriptFromStore(conversationId, makeBlobsTranscriptStore());
+            var transcript = await GetChatTranscriptFromStore(conversationId, makeBlobsTranscriptStore);
             if (transcript.Count < 5)
             {
                 return defaultMessage;
@@ -295,7 +289,7 @@ namespace BPMeAUChatBot.API.Services
             var toEmailId = GetEmailId(sendTranscriptEntity);
 
             var transcript =
-                await GetChatTranscriptFromStore(sendTranscriptEntity.ConversationId, this.GetBlobsTranscriptStore());
+                await GetChatTranscriptFromStore(sendTranscriptEntity.ConversationId, this._transcriptStore);
             if (!transcript.Any()) return false;
             //  load chat transcript in document format
             // transcript is there process email 
@@ -306,7 +300,7 @@ namespace BPMeAUChatBot.API.Services
             var emailTemplate = await LoadEmailTemplate(sendTranscriptEntity);
 
             var userInf = await _chatTransactionService.GetTransactionByConversationId(sendTranscriptEntity.ConversationId);
-            var firstintent = await GetFirstIntentAsync(sendTranscriptEntity.ConversationId, this.GetBlobsTranscriptStore);
+            var firstintent = await GetFirstIntentAsync(sendTranscriptEntity.ConversationId, this._transcriptStore);
 
             emailTemplate = emailTemplate.Replace("$vChatStartTime$", transcriptDocDto.StartTimeFormatted)
                 .Replace("$vChatEndTime$", transcriptDocDto.EndTimeFormatted)
@@ -380,7 +374,7 @@ namespace BPMeAUChatBot.API.Services
 
             {
                 var transcript =
-                    await GetChatTranscriptFromStore(sendTranscriptEntity.ConversationId, this.GetBlobsTranscriptStore());
+                    await GetChatTranscriptFromStore(sendTranscriptEntity.ConversationId, this._transcriptStore);
 
                 string fullname = " ";
 
@@ -392,7 +386,7 @@ namespace BPMeAUChatBot.API.Services
                 var emailTemplate = await LoadEmailTemplate();
 
                 var userInf = await _chatTransactionService.GetTransactionByConversationId(sendTranscriptEntity.ConversationId);
-                var firstintent = await GetFirstIntentAsync(sendTranscriptEntity.ConversationId, this.GetBlobsTranscriptStore); ;
+                var firstintent = await GetFirstIntentAsync(sendTranscriptEntity.ConversationId, this._transcriptStore);
                 var name = userInf.Name.Split(" ");
 
                 //Pascal Case
@@ -699,7 +693,7 @@ namespace BPMeAUChatBot.API.Services
         public async Task<ChatTranscriptDto> GetChatTranscriptText(string conversationId)
         {
             var transcript =
-                await GetChatTranscriptFromStore(conversationId, this.GetBlobsTranscriptStore());
+                await GetChatTranscriptFromStore(conversationId, this._transcriptStore);
             return !transcript.Any() ? throw new DataException("No chat record was found") : LoadChatTranscriptTextAsync(transcript);
         }
 

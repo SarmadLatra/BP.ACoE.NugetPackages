@@ -10,8 +10,6 @@ namespace BPMeAUChatBot.API.Services.Interfaces
 {
     public interface IChatTranscriptService
     {
-        ITranscriptStore GetBlobsTranscriptStore();
-
         Task<IList<Activity>> GetChatTranscriptFromStore(string conversationId, ITranscriptStore store,
             string channelId = "directline");
 
@@ -20,7 +18,7 @@ namespace BPMeAUChatBot.API.Services.Interfaces
         // Task<(XWPFDocument document, string fileName)> GetChatTranscriptForCustomerInDocAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore);
 
         Task<(byte[] document, string fileName)> GetChatTranscriptForCustomerInPDFAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore);
-        Task<string> GetFirstIntentAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore);
+        Task<string> GetFirstIntentAsync(string conversationId, ITranscriptStore makeBlobsTranscriptStore);
 
         // new service methods
 
