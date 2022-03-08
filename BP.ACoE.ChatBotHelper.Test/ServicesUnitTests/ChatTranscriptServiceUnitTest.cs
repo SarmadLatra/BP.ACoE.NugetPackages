@@ -11,6 +11,8 @@ using Microsoft.Graph;
 using Moq;
 using Serilog;
 using Xunit;
+using MemoryCache.Testing.Moq;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
 {
@@ -103,9 +105,12 @@ namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
                  ContinuationToken = null,
              });
             mockEmailService.Setup(x => x.SendHtmlEmailAsync(It.IsAny<Message>()));
+            var mockMemoryCache = Create.MockedMemoryCache();
+
+            mockMemoryCache.Set("mockConversationId", It.IsAny<List<IActivity?>>(), new DateTimeOffset());
 
             var obj = new ChatTranscriptService(mockSettings.Object, mockLogger, mockHttpClient.Object, mockStorageService.Object,
-                                                mockEncryptionService.Object, mockEmailService.Object, mockChatTransactionService.Object, mockTranscriptStoreService.Object);
+                                                mockEncryptionService.Object, mockEmailService.Object, mockMemoryCache, mockChatTransactionService.Object, mockTranscriptStoreService.Object);
 
             var output2 = await obj.GetChatTranscriptFromStore("mockConversationId", mockIChatTranscriptStore.Object, "mockChannel");
             _ = await Assert.ThrowsAsync<QuestPDF.Drawing.Exceptions.DocumentComposeException>(() => obj.SendChatTranscriptAsync(new Models.ChatBotSeibelEntity()

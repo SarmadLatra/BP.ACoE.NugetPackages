@@ -21,5 +21,7 @@ namespace BPMeAUChatBot.API.Models
         public string IssueType { get; set; }
         public string NewEmail { get; set; }
         public string OldEmail { get; set; }
+        public string ToEmail { get; set; }
+
     }
 }

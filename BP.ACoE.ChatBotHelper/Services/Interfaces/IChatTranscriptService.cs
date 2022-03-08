@@ -13,11 +13,11 @@ namespace BPMeAUChatBot.API.Services.Interfaces
         Task<IList<Activity>> GetChatTranscriptFromStore(string conversationId, ITranscriptStore store,
             string channelId = "directline");
 
-        Task<int> GetChatBotTurnCountFromTranscriptAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore);
-        Task<GetChatTranscriptModel> GetChatTranscriptAsync(GetChatTranscriptModel model, Func<ITranscriptStore> makeBlobsTranscriptStore);
+        Task<int> GetChatBotTurnCountFromTranscriptAsync(string conversationId, ITranscriptStore makeBlobsTranscriptStore);
+        Task<GetChatTranscriptModel> GetChatTranscriptAsync(GetChatTranscriptModel model, ITranscriptStore makeBlobsTranscriptStore);
         // Task<(XWPFDocument document, string fileName)> GetChatTranscriptForCustomerInDocAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore);
 
-        Task<(byte[] document, string fileName)> GetChatTranscriptForCustomerInPDFAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore);
+        Task<(byte[] document, string fileName)> GetChatTranscriptForCustomerInPDFAsync(string conversationId, ITranscriptStore makeBlobsTranscriptStore);
         Task<string> GetFirstIntentAsync(string conversationId, ITranscriptStore makeBlobsTranscriptStore);
 
         // new service methods

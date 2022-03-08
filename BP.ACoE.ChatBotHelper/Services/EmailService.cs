@@ -1,14 +1,12 @@
-﻿using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using BP.ACoE.ChatBotHelper.Models;
+﻿using BP.ACoE.ChatBotHelper.Models;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
 using BPMeAUChatBot.API.Services.Interfaces;
 using BPMeAUChatBot.API.Settings;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Serilog;
+using System.Net.Http.Headers;
 
 namespace BPMeAUChatBot.API.Services
 {

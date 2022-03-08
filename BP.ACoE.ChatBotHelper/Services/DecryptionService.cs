@@ -1,13 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using BP.ACoE.ChatBotHelper.Settings;
+﻿using BP.ACoE.ChatBotHelper.Settings;
 using BPMeAUChatBot.API.Services.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Serilog;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BPMeAUChatBot.API.Services
 {

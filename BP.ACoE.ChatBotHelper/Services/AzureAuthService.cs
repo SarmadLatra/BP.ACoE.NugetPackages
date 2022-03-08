@@ -1,9 +1,9 @@
-﻿using System.Net.Http.Headers;
-using BP.ACoE.ChatBotHelper.Models;
+﻿using BP.ACoE.ChatBotHelper.Models;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
 using Newtonsoft.Json;
 using Serilog;
+using System.Net.Http.Headers;
 
 namespace BP.ACoE.ChatBotHelper.Services
 {

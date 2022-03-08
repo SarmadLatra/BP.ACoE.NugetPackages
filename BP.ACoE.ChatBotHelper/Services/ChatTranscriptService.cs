@@ -1,31 +1,23 @@
-﻿using System;
-using System.Data;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Azure;
+﻿using BP.ACoE.ChatBotHelper.Extensions;
+using BP.ACoE.ChatBotHelper.Services.Interfaces;
+using BP.ACoE.ChatBotHelper.Settings;
+using BPMeAUChatBot.API.Helpers;
 using BPMeAUChatBot.API.Models;
 using BPMeAUChatBot.API.Services.Interfaces;
 using BPMeAUChatBot.API.ViewModels;
-using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.Graph;
+using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using Serilog;
-using System.Text.RegularExpressions;
-using BP.ACoE.ChatBotHelper.Services.Interfaces;
-using Microsoft.WindowsAzure.Storage.Table;
-using BPMeAUChatBot.API.Helpers;
-using BP.ACoE.ChatBotHelper.Settings;
-using Microsoft.Extensions.Options;
+using System.Data;
+using System.Globalization;
 using System.Reflection;
+using System.Text;
 
 namespace BPMeAUChatBot.API.Services
 {
@@ -42,9 +34,10 @@ namespace BPMeAUChatBot.API.Services
         private const string ClassName = "ChatTranscriptService ---";
         private readonly string _tableName;
         private readonly string _partitionKey;
+        private readonly IMemoryCache _cache;
 
         public ChatTranscriptService(IOptions<ChatTranscriptSettings> chatTranscriptSettings, ILogger logger, HttpClient client,
-            IStorageService storageService, IEncryptionService decryption, IEmailService emailService, IChatTransactionService chatTransactionService, ITranscriptStore transcriptStore)
+            IStorageService storageService, IEncryptionService decryption, IEmailService emailService, IMemoryCache cache, IChatTransactionService chatTransactionService, ITranscriptStore transcriptStore)
         {
             _chatTranscriptSettings = chatTranscriptSettings.Value;
             _logger = logger.ForContext<ChatTranscriptService>();
@@ -54,6 +47,7 @@ namespace BPMeAUChatBot.API.Services
             _emailService = emailService;
             _tableName = _chatTranscriptSettings.SendTranscriptTable;
             _partitionKey = _chatTranscriptSettings.PartitionKey;
+            _cache = cache;
             _chatTransactionService = chatTransactionService;
             _transcriptStore = transcriptStore;
         }
@@ -74,10 +68,9 @@ namespace BPMeAUChatBot.API.Services
 
         }
 
-        public async Task<int> GetChatBotTurnCountFromTranscriptAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore)
+        public async Task<int> GetChatBotTurnCountFromTranscriptAsync(string conversationId, ITranscriptStore makeBlobsTranscriptStore)
         {
-            var store = makeBlobsTranscriptStore();
-            var transcript = await GetChatTranscriptFromStore(conversationId, store);
+            var transcript = await GetChatTranscriptFromStore(conversationId, makeBlobsTranscriptStore);
             var botName = _chatTranscriptSettings.ChatbotName;
             const string methodName = "GetChatBotTurnCountFromTranscriptAsync---";
             _logger.Information($"{ClassName}{methodName} -- Started");
@@ -161,7 +154,7 @@ namespace BPMeAUChatBot.API.Services
             if (filteredTranscript.FirstOrDefault() != null)
             {
                 timestamp = filteredTranscript.FirstOrDefault().Timestamp;
-                submitDateTime = ConvertDateTime(timestamp.Value.UtcDateTime);
+                submitDateTime = ChatTranscriptHelper.ConvertDateTime(timestamp.Value.UtcDateTime, _chatTranscriptSettings.TimeZone);
                 transciptFilename.Append($"-{submitDateTime.ToString("MM-dd-yyyy")}");
             }
 
@@ -248,9 +241,15 @@ namespace BPMeAUChatBot.API.Services
         public async Task<string> GetFirstIntentAsync(string conversationId, ITranscriptStore makeBlobsTranscriptStore)
         {
             const string methodName = "GetFirstIntent---";
+            var transcript = new List<IActivity?>();
             _logger.Information($"{ClassName}{methodName} -- Started");
             var defaultMessage = "Customer has not selected or typed anything.";
-            var transcript = await GetChatTranscriptFromStore(conversationId, makeBlobsTranscriptStore);
+            var cacheResposne = _cache.Get<List<IActivity>?>(conversationId);
+
+            transcript = cacheResposne != null ? cacheResposne : await GetChatTranscriptFromStore(conversationId, makeBlobsTranscriptStore);
+
+            _cache.Set(conversationId, transcript, TimeSpan.FromMinutes(15));
+
             if (transcript.Count < 5)
             {
                 return defaultMessage;
@@ -285,8 +284,8 @@ namespace BPMeAUChatBot.API.Services
 
         public async Task<bool> SendChatTranscriptAsync(ChatBotSeibelEntity sendTranscriptEntity)
         {
-
-            var toEmailId = GetEmailId(sendTranscriptEntity);
+            //Remove ToEmailId and add that from ChatBotSeibelEntity
+            //var toEmailId = GetEmailId(sendTranscriptEntity);
 
             var transcript =
                 await GetChatTranscriptFromStore(sendTranscriptEntity.ConversationId, this._transcriptStore);
@@ -315,7 +314,7 @@ namespace BPMeAUChatBot.API.Services
                     new List<Recipient>()
                     {
                         // todo: toEmailId update 
-                        new Recipient {EmailAddress = new EmailAddress() {Address = toEmailId},},
+                        new Recipient {EmailAddress = new EmailAddress() {Address = sendTranscriptEntity.ToEmail},},
                     },
                 From = new Recipient()
                 {
@@ -392,7 +391,7 @@ namespace BPMeAUChatBot.API.Services
                 //Pascal Case
                 foreach (var i in name)
                 {
-                    fullname += FirstCharToUpper(i) + " ";
+                    fullname += ChatTranscriptHelper.FirstCharToUpper(i) + " ";
                 }
 
                 emailTemplate = emailTemplate.Replace("$vChatStartTime$", transcriptDocDto.StartTimeFormatted)
@@ -461,20 +460,6 @@ namespace BPMeAUChatBot.API.Services
         }
 
         #region Private Methods
-        private DateTime ConvertDateTime(DateTime userDateTime)
-        {
-            const string methodName = "ConvertDateTime--";
-            _logger.Information($"{ClassName}{methodName} is called");
-
-            //Get the TimeZone of the user
-            var timeZone = _chatTranscriptSettings.TimeZone;
-            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
-
-            //Convert to UTC
-            DateTime convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(userDateTime, timeZoneInfo);
-            return convertedDateTime;
-        }
-
 
         private string? GetEmailId(ChatBotSeibelEntity sendTranscriptEntity)
         {
@@ -510,11 +495,11 @@ namespace BPMeAUChatBot.API.Services
             return results.ConvertAll(o => (Activity)o);
         }
         [Obsolete]
-        public async Task<GetChatTranscriptModel> GetChatTranscriptAsync(GetChatTranscriptModel model, Func<ITranscriptStore> makeBlobsTranscriptStore)
+        public async Task<GetChatTranscriptModel> GetChatTranscriptAsync(GetChatTranscriptModel model, ITranscriptStore makeBlobsTranscriptStore)
         {
 
             {
-                var transcript = await GetChatTranscriptFromStore(model.ConversationId, makeBlobsTranscriptStore());
+                var transcript = await GetChatTranscriptFromStore(model.ConversationId, makeBlobsTranscriptStore);
 
                 const string methodName = "GetChatTranscript---";
                 _logger.Information($"{ClassName}{methodName} -- Started");
@@ -539,7 +524,7 @@ namespace BPMeAUChatBot.API.Services
 
                     //Calculate Span
                     _logger.Information($"{ClassName}{methodName} called CalculateTimeSpan");
-                    var addTicks = CalculateTimeSpan(formattedTimeStamp, lastTime);
+                    var addTicks = ChatTranscriptHelper.CalculateTimeSpan(formattedTimeStamp, lastTime);
                     string findColonInMessage;
                     if (message.From?.Name?.ToLower().Contains(_chatTranscriptSettings.ChatbotName) == true)
                     {
@@ -589,13 +574,12 @@ namespace BPMeAUChatBot.API.Services
         //     return doc;
         // }
 
-        public async Task<(byte[] document, string fileName)> GetChatTranscriptForCustomerInPDFAsync(string conversationId, Func<ITranscriptStore> makeBlobsTranscriptStore)
+        public async Task<(byte[] document, string fileName)> GetChatTranscriptForCustomerInPDFAsync(string conversationId, ITranscriptStore makeBlobsTranscriptStore)
         {
             const string methodName = "GetChatTranscriptForCustomerAsync---";
             _logger.Information($"{ClassName}{methodName} -- Started");
 
-            var store = makeBlobsTranscriptStore();
-            var transcript = await GetChatTranscriptFromStore(conversationId, store);
+            var transcript = await GetChatTranscriptFromStore(conversationId, makeBlobsTranscriptStore);
 
             var doc = await GenerateChatTranscriptPDF(transcript, conversationId);
             //_logger.Information($"{ClassName}{methodName} -- {out1}");
@@ -624,15 +608,6 @@ namespace BPMeAUChatBot.API.Services
                 _logger.Information($"{ClassName}-{methodName} data received");
                 if (!data.Any()) throw new HttpRequestException("Chat Transcript record was not found");
                 return data[0];
-            }
-        }
-        private static string FirstCharToUpper(string input)
-        {
-            switch (input)
-            {
-                case null: throw new ArgumentNullException(nameof(input));
-                case "": throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input));
-                default: return input.First().ToString() + input.Substring(1).ToString().ToLower();
             }
         }
 
@@ -748,7 +723,7 @@ namespace BPMeAUChatBot.API.Services
 
                 //Calculate Span
                 _logger.Information($"{ClassName}{methodName} called CalculateTimeSpan");
-                var addTicks = CalculateTimeSpan(formattedTimeStamp, chatStartDateTime);
+                var addTicks = ChatTranscriptHelper.CalculateTimeSpan(formattedTimeStamp, chatStartDateTime);
                 string findColonInMessage;
                 if (message.From?.Name?.ToLower().Contains(_chatTranscriptSettings.ChatbotName) == true)
                 {
@@ -829,37 +804,6 @@ namespace BPMeAUChatBot.API.Services
             var emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
             return emailTemplate;
         }
-
-
-        private string CalculateTimeSpan(DateTime FormattedTimeStamp, DateTime lastTime)
-        {
-            string addTicks;
-
-            //Calculate Span
-            TimeSpan span = FormattedTimeStamp.Subtract(lastTime);
-
-            //Generate time
-            if (span.Seconds <= 60 && span.Minutes == 0 && span.Hours == 0 && span.Days == 0)
-            {
-                addTicks = span.Seconds.ToString() + "s";
-            }
-            else if (span.Minutes <= 60 && span.Hours == 00 && span.Days == 0)
-            {
-                addTicks = span.Minutes.ToString() + "m " + span.Seconds.ToString() + "s";
-            }
-            else if (span.Hours <= 24 && span.Days == 0)
-            {
-                addTicks = span.Hours.ToString() + "h " + span.Minutes.ToString() + "m " + span.Seconds.ToString() + "s";
-            }
-            else
-            {
-                addTicks = span.Days.ToString() + "d " + span.Hours.ToString() + "h " + span.Minutes.ToString() + "m " + span.Seconds.ToString() + "s";
-            }
-
-            return addTicks;
-        }
-
-
         #endregion
     }
 }
