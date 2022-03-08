@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BPMeAUChatBot.API.Models
+namespace BP.ACoE.ChatBotHelper.Models
 {
     public class ChatbotTransactionEntity: BaseEntity
     {

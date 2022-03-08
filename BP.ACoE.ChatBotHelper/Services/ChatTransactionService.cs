@@ -1,13 +1,12 @@
-﻿using BP.ACoE.ChatBotHelper.Services.Interfaces;
+﻿using BP.ACoE.ChatBotHelper.Models;
+using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
-using BPMeAUChatBot.API.Models;
 using BPMeAUChatBot.API.Services.Interfaces;
-using BPMeAUChatBot.API.ViewModels;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage.Table;
 using Serilog;
 
-namespace BPMeAUChatBot.API.Services
+namespace BP.ACoE.ChatBotHelper.Services
 {
     public class ChatTransactionService : IChatTransactionService
     {

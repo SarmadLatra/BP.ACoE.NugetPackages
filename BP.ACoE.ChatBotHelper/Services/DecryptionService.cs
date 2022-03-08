@@ -5,7 +5,7 @@ using Serilog;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BPMeAUChatBot.API.Services
+namespace BP.ACoE.ChatBotHelper.Services
 {
     public class EncryptionService : IEncryptionService
     {

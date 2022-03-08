@@ -4,10 +4,9 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using BP.ACoE.ChatBotHelper.Services;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
-using BPMeAUChatBot.API.Services;
-using BPMeAUChatBot.API.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -15,7 +14,7 @@ using Moq.Protected;
 using Serilog;
 using Xunit;
 
-namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
+namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
 {
     public class DecryptionServiceUnitTest
     {

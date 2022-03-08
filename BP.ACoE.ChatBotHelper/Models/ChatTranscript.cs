@@ -1,6 +1,6 @@
 ﻿using BP.ACoE.ChatBotHelper.Models;
 
-namespace BPMeAUChatBot.API.Models
+namespace BP.ACoE.ChatBotHelper.Models
 {
     public class ChatTranscript : BaseEntity
     {

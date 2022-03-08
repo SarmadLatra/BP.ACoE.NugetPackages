@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BPMeAUChatBot.API.Models;
-using BPMeAUChatBot.API.ViewModels;
+using BP.ACoE.ChatBotHelper.Models;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 

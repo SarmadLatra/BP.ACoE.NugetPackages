@@ -1,10 +1,9 @@
 ﻿using BP.ACoE.ChatBotHelper.Extensions;
+using BP.ACoE.ChatBotHelper.Models;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
 using BPMeAUChatBot.API.Helpers;
-using BPMeAUChatBot.API.Models;
 using BPMeAUChatBot.API.Services.Interfaces;
-using BPMeAUChatBot.API.ViewModels;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Caching.Memory;
@@ -19,7 +18,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 
-namespace BPMeAUChatBot.API.Services
+namespace BP.ACoE.ChatBotHelper.Services
 {
     public class ChatTranscriptService : IChatTranscriptService
     {

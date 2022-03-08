@@ -1,6 +1,5 @@
-﻿using System.Threading.Tasks;
-using BPMeAUChatBot.API.Models;
-using BPMeAUChatBot.API.ViewModels;
+﻿using BP.ACoE.ChatBotHelper.Models;
+using System.Threading.Tasks;
 namespace BPMeAUChatBot.API.Services.Interfaces
 {
     public interface IChatTransactionService

@@ -8,7 +8,7 @@ using Microsoft.Graph;
 using Serilog;
 using System.Net.Http.Headers;
 
-namespace BPMeAUChatBot.API.Services
+namespace BP.ACoE.ChatBotHelper.Services
 {
     public class EmailService : IEmailService
     {

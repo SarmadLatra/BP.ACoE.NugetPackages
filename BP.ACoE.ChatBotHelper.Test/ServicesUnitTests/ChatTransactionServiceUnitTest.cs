@@ -1,8 +1,8 @@
-﻿using BP.ACoE.ChatBotHelper.Services.Interfaces;
+﻿using BP.ACoE.ChatBotHelper.Models;
+using BP.ACoE.ChatBotHelper.Services;
+using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
-using BPMeAUChatBot.API.Models;
 using BPMeAUChatBot.API.Services;
-using BPMeAUChatBot.API.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace BPAURewardsChatBot.API.Tests.ServicesUnitTest.cs
+namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
 {
     public class ChatTransactionServiceUnitTest
     {

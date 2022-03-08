@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BPMeAUChatBot.API.ViewModels
+namespace BP.ACoE.ChatBotHelper.Models
 {
     public class SendTranscriptModel
     {

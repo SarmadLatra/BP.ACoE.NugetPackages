@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 
-namespace BPAURewardsChatBot.API.Tests.ServicesUnitTest.cs
+namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
 {
     public class AzureAuthServiceUnitTest
     {

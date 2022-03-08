@@ -1,8 +1,5 @@
 ﻿using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
-using BPMeAUChatBot.API.Models;
-using BPMeAUChatBot.API.Services;
-using BPMeAUChatBot.API.Services.Interfaces;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
@@ -13,8 +10,11 @@ using Serilog;
 using Xunit;
 using MemoryCache.Testing.Moq;
 using Microsoft.Extensions.Caching.Memory;
+using BPMeAUChatBot.API.Services.Interfaces;
+using BP.ACoE.ChatBotHelper.Services;
+using BP.ACoE.ChatBotHelper.Models;
 
-namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
+namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
 {
     public class ChatTranscriptServiceUnitTest
     {
@@ -90,7 +90,7 @@ namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
 
             });
             mockChatTransactionService.Setup(x => x.GetTransactionByConversationId(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(new Models.ChatbotTransactionEntity()
+                .ReturnsAsync(new BP.ACoE.ChatBotHelper.Models.ChatbotTransactionEntity()
                 {
                     UserId = "dl_0202",
                     Name = "mockName",
@@ -113,7 +113,7 @@ namespace BPMeAUChatBot.API.Tests.ServicesUnitTest.cs
                                                 mockEncryptionService.Object, mockEmailService.Object, mockMemoryCache, mockChatTransactionService.Object, mockTranscriptStoreService.Object);
 
             var output2 = await obj.GetChatTranscriptFromStore("mockConversationId", mockIChatTranscriptStore.Object, "mockChannel");
-            _ = await Assert.ThrowsAsync<QuestPDF.Drawing.Exceptions.DocumentComposeException>(() => obj.SendChatTranscriptAsync(new Models.ChatBotSeibelEntity()
+            _ = await Assert.ThrowsAsync<QuestPDF.Drawing.Exceptions.DocumentComposeException>(() => obj.SendChatTranscriptAsync(new BP.ACoE.ChatBotHelper.Models.ChatBotSeibelEntity()
             {
                 PartitionKey = "BPmeChatBot",
                 RowKey = "9570f80d-dce3-4560-83c0-4081be67f134",

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace BPMeAUChatBot.API.ViewModels
+namespace BP.ACoE.ChatBotHelper.Models
 {
     public class ChatTranscriptModel
     {
