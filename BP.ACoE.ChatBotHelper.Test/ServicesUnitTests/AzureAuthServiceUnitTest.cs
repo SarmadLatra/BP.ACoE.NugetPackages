@@ -1,19 +1,12 @@
-﻿using BP.ACoE.ChatBotHelper.Services;
+﻿using System.Net;
+using BP.ACoE.ChatBotHelper.Services;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using Moq;
 using Moq.Protected;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
-
-namespace BPAURewardsChatBot.API.Tests.ServicesUnitTest.cs
+namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
 {
     public class AzureAuthServiceUnitTest
     {

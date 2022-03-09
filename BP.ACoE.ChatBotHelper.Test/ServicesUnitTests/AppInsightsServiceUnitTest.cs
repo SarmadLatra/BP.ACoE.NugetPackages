@@ -1,23 +1,10 @@
 ﻿using BP.ACoE.ChatBotHelper.Models;
 using BP.ACoE.ChatBotHelper.Services;
-using BP.ACoE.ChatBotHelper.Services.Interfaces;
-using BP.ACoE.ChatBotHelper.Settings;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Options;
-using Moq;
-using Moq.Protected;
 using Serilog;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests

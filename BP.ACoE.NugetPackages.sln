@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BP.ACoE.ChatBotHelper", "BP.ACoE.ChatBotHelper\BP.ACoE.ChatBotHelper.csproj", "{84F42138-B6F7-4315-B793-C2FB297561A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BP.ACoE.ChatBotHelper.Test", "BP.ACoE.ChatBotHelper.Test\BP.ACoE.ChatBotHelper.Test.csproj", "{86E21F9C-5F9E-4906-8A43-D43B9341D04B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BP.ACoE.ChatBotHelper.Test", "BP.ACoE.ChatBotHelper.Test\BP.ACoE.ChatBotHelper.Test.csproj", "{DF1C1DDA-9CF6-4CE5-A96C-32A6E47F6088}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{84F42138-B6F7-4315-B793-C2FB297561A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84F42138-B6F7-4315-B793-C2FB297561A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84F42138-B6F7-4315-B793-C2FB297561A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86E21F9C-5F9E-4906-8A43-D43B9341D04B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86E21F9C-5F9E-4906-8A43-D43B9341D04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86E21F9C-5F9E-4906-8A43-D43B9341D04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86E21F9C-5F9E-4906-8A43-D43B9341D04B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF1C1DDA-9CF6-4CE5-A96C-32A6E47F6088}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF1C1DDA-9CF6-4CE5-A96C-32A6E47F6088}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF1C1DDA-9CF6-4CE5-A96C-32A6E47F6088}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF1C1DDA-9CF6-4CE5-A96C-32A6E47F6088}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

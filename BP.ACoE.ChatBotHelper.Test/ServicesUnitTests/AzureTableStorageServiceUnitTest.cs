@@ -1,21 +1,9 @@
 ﻿using Azure;
-using Azure.Core;
 using Azure.Data.Tables;
 using BP.ACoE.ChatBotHelper.Models;
 using BP.ACoE.ChatBotHelper.Services;
-using BP.ACoE.ChatBotHelper.Services.Interfaces;
-using BP.ACoE.ChatBotHelper.Settings;
-using Microsoft.Extensions.Options;
 using Moq;
-using Moq.Protected;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
@@ -27,14 +15,12 @@ namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
         {
             var obj = SetParam(false);
 
-            var mockType = new { Id = "mockId", Name = "mock" };
-
             var result1 = await obj.GetStorageTableAsync("mockTable");
             var result2 = obj.GetEntityByRowKey<BaseEntity>("mockTable", "mockRowKey");
             var result3 = await obj.GetEntitiesByQuery<BaseEntity>("mockTable", "mockRowKey");
 
-            await Assert.ThrowsAsync<HttpRequestException>(() => obj.InsertEntity("mockTable", new BaseEntity() { }));
-            await Assert.ThrowsAsync<HttpRequestException>(() => obj.UpdateEntity("mockTable", new BaseEntity() { }));
+            await Assert.ThrowsAsync<HttpRequestException>(() => obj.InsertEntity("mockTable", new BaseEntity() ));
+            await Assert.ThrowsAsync<HttpRequestException>(() => obj.UpdateEntity("mockTable", new BaseEntity() ));
             await Assert.ThrowsAsync<NullReferenceException>(() => obj.RemoveEntity("mockTable", "mockRowKey"));
             await Assert.ThrowsAsync<HttpRequestException>(() => obj.GetEntityByConversationId<BaseEntity>("mockTable", "mockConversation"));
 

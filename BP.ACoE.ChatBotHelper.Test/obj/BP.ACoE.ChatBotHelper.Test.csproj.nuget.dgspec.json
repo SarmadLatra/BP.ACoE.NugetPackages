@@ -1,0 +1,254 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper.Test\\BP.ACoE.ChatBotHelper.Test.csproj": {}
+  },
+  "projects": {
+    "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper.Test\\BP.ACoE.ChatBotHelper.Test.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper.Test\\BP.ACoE.ChatBotHelper.Test.csproj",
+        "projectName": "BP.ACoE.ChatBotHelper.Test",
+        "projectPath": "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper.Test\\BP.ACoE.ChatBotHelper.Test.csproj",
+        "packagesPath": "C:\\Users\\mudas\\.nuget\\packages\\",
+        "outputPath": "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper.Test\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mudas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files (x86)\\Progress\\Telerik UI for Blazor 3.0.0\\packages": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://bp-vsts.pkgs.visualstudio.com/67eaf4d2-2360-43e9-957e-1c7d67049d36/_packaging/Squad_Pluto_Feed/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper\\BP.ACoE.ChatBotHelper.csproj": {
+                "projectPath": "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper\\BP.ACoE.ChatBotHelper.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "AutoFixture": {
+              "target": "Package",
+              "version": "[4.17.0, )"
+            },
+            "MemoryCache.Testing.Moq": {
+              "target": "Package",
+              "version": "[1.2.2, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.1.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.16.1, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[2.10.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper\\BP.ACoE.ChatBotHelper.csproj": {
+      "version": "1.0.2",
+      "restore": {
+        "projectUniqueName": "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper\\BP.ACoE.ChatBotHelper.csproj",
+        "projectName": "BP.ACoE.ChatBotHelper",
+        "projectPath": "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper\\BP.ACoE.ChatBotHelper.csproj",
+        "packagesPath": "C:\\Users\\mudas\\.nuget\\packages\\",
+        "outputPath": "D:\\office\\bp\\HelperPackages\\BP.ACoE.NugetPackages\\BP.ACoE.ChatBotHelper\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mudas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files (x86)\\Progress\\Telerik UI for Blazor 3.0.0\\packages": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://bp-vsts.pkgs.visualstudio.com/67eaf4d2-2360-43e9-957e-1c7d67049d36/_packaging/Squad_Pluto_Feed/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[11.0.1, )"
+            },
+            "Azure.Data.Tables": {
+              "target": "Package",
+              "version": "[12.4.0, )"
+            },
+            "JWT": {
+              "target": "Package",
+              "version": "[8.9.0, )"
+            },
+            "Microsoft.ApplicationInsights": {
+              "target": "Package",
+              "version": "[2.20.0, )"
+            },
+            "Microsoft.AspNetCore": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Diagnostics.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Hosting": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            },
+            "Microsoft.AspNetCore.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Http": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Http.Extensions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.Azure.Cosmos": {
+              "target": "Package",
+              "version": "[3.25.0, )"
+            },
+            "Microsoft.Bot.Builder": {
+              "target": "Package",
+              "version": "[4.15.2, )"
+            },
+            "Microsoft.Extensions.Caching.Memory": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Binder": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.Graph": {
+              "target": "Package",
+              "version": "[4.19.0, )"
+            },
+            "Microsoft.NETCore.App": {
+              "target": "Package",
+              "version": "[2.2.8, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2022.2.6, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[2.10.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.16.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
