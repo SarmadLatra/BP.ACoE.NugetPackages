@@ -12,10 +12,13 @@
 	<PackageReleaseNotes>first release</PackageReleaseNotes>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<RepositoryUrl>https://bp-vsts.visualstudio.com/RPA%20CoE/_git/000%20Pluto%20VA%20-%20Nuget</RepositoryUrl>
-	<AssemblyVersion>1.0.0.1</AssemblyVersion>
-	<FileVersion>1.0.0.1</FileVersion>
+	<AssemblyVersion>1.0.0.3</AssemblyVersion>
+	<FileVersion>1.0.0.3</FileVersion>
 	  <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-	  <Version>1.0.2</Version>
+	  <Version>1.0.3</Version>
+	  <Copyright>BP</Copyright>
+	  <PackageProjectUrl>https://bp-vsts.visualstudio.com/RPA%20CoE/_git/000%20Pluto%20VA%20-%20Nuget</PackageProjectUrl>
+	  <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>

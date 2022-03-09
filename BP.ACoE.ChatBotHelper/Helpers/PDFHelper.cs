@@ -20,9 +20,9 @@ namespace BP.ACoE.ChatBotHelper.Helpers
 
     public class ChatTranscriptDocument : IDocument
     {
-        string _headerImagePath = string.Empty;
-        string _footerImagePath = string.Empty;
-        List<ChatTextComponent> _paragraphs;
+        private readonly string _headerImagePath;
+        private readonly string _footerImagePath;
+        private readonly List<ChatTextComponent> _paragraphs;
         public ChatTranscriptDocument(string headerImageFullName, string footerImageFullName, List<ChatTextComponent> paragraphs)
         {
             _headerImagePath = headerImageFullName;
@@ -45,40 +45,37 @@ namespace BP.ACoE.ChatBotHelper.Helpers
 
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
 
-        void ComposeHeader(IContainer container)
+        private void ComposeHeader(IContainer container)
         {
             container.Row(row =>
             {
-                row.RelativeColumn().Stack(stack =>
+                row.RelativeItem().Column(stack =>
                 {
                     stack.Item().Image(_headerImagePath);
                 });
             });
         }
 
-        void ComposeFooter(IContainer container)
+        private void ComposeFooter(IContainer container)
         {
             container.Row(row =>
             {
-                row.RelativeColumn().Stack(stack =>
+                row.RelativeItem().Column(stack =>
                 {
                     stack.Item().Image(_footerImagePath);
                 });
             });
         }
 
-        void ComposeContent(IContainer container)
+        private void ComposeContent(IContainer container)
         {
-            string linkTitle = string.Empty;
-            string linkTarget = string.Empty;
-
-            float padding = 25;
+            const float padding = 25;
 
             container.PaddingVertical(40)
-                .Stack(stack =>
+                .Column(stack =>
             {
                 stack.Spacing(3);
-                foreach (ChatTextComponent text in _paragraphs)
+                foreach (var text in _paragraphs)
                 {
                     stack.Item().PaddingLeft(padding).PaddingRight(padding).Component(text);
                 }
@@ -91,9 +88,9 @@ namespace BP.ACoE.ChatBotHelper.Helpers
         private readonly string _userName;
         private readonly string _message;
         private readonly ChatTextComponentProperties _textProps;
-        private readonly string linkTitleRegex = @"\[(.*?)\]";
-        private readonly string linkTargetRegex = @"\((.*?)\)";
-        private readonly string linksRegex = @"\[.*?\]\(.*?\)";
+        private const string LinkTitleRegex = @"\[(.*?)\]";
+        private const string LinkTargetRegex = @"\((.*?)\)";
+        private const string LinksRegex = @"\[.*?\]\(.*?\)";
 
         public ChatTextComponent(string userName, string message, ChatTextComponentProperties textProps)
         {
@@ -104,7 +101,7 @@ namespace BP.ACoE.ChatBotHelper.Helpers
 
         public void Compose(IContainer container)
         {
-            MatchCollection allLinks = Regex.Matches(this._message, linksRegex);
+            var allLinks = Regex.Matches(this._message, LinksRegex);
             container.EnsureSpace().Text(mainText =>
             {
                 if (!string.IsNullOrWhiteSpace(this._userName))
@@ -132,18 +129,18 @@ namespace BP.ACoE.ChatBotHelper.Helpers
 
         private void SetContentsWithHyperlink(TextDescriptor mainText, string content, MatchCollection allLinks, ChatTextComponentProperties textProps)
         {
-            string placeholder = $"{PdfHelper.Link}";
+            const string placeholder = $"{PdfHelper.Link}";
 
-            var modifiedContent = Regex.Replace(content, linksRegex, placeholder);
+            var modifiedContent = Regex.Replace(content, LinksRegex, placeholder);
             var brokenContent = modifiedContent.Split(PdfHelper.Link);
 
             var minLength = Math.Min(allLinks.Count, brokenContent.Length);
 
 
-            for (int i = 0; i < minLength; i++)
+            for (var i = 0; i < minLength; i++)
             {
-                var linkTarget = Regex.Match(allLinks[i].Value, linkTargetRegex).Value.Replace("(", string.Empty).Replace(")", string.Empty);
-                var linkTitle = Regex.Match(allLinks[i].Value, linkTitleRegex).Value.Replace("[", string.Empty).Replace("]", string.Empty);
+                var linkTarget = Regex.Match(allLinks[i].Value, LinkTargetRegex).Value.Replace("(", string.Empty).Replace(")", string.Empty);
+                var linkTitle = Regex.Match(allLinks[i].Value, LinkTitleRegex).Value.Replace("[", string.Empty).Replace("]", string.Empty);
 
                 mainText.Span(brokenContent[i],
                                           (textProps == ChatTextComponentProperties.BoldMessage || textProps == ChatTextComponentProperties.BoldContent)
