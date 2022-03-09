@@ -8,3 +8,5 @@
 /BP.ACoE.ChatBotHelper/bin/Debug
 /BP.ACoE.ChatBotHelper/bin/Release
 /nuget
+/BP.ACoE.ChatBotHelper.Test/obj
+/.vs
