@@ -2,7 +2,6 @@
 using BP.ACoE.ChatBotHelper.Models;
 using BP.ACoE.ChatBotHelper.Services.Interfaces;
 using BP.ACoE.ChatBotHelper.Settings;
-using BPMeAUChatBot.API.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Serilog;

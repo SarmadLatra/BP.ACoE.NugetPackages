@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Graph;
+﻿using Microsoft.Graph;
 
-namespace BPMeAUChatBot.API.Services.Interfaces
+namespace BP.ACoE.ChatBotHelper.Services.Interfaces
 {
     public interface IEmailService
     {
