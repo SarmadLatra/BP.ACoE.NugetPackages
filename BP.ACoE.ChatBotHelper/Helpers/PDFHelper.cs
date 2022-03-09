@@ -106,7 +106,7 @@ namespace BP.ACoE.ChatBotHelper.Helpers
             {
                 if (!string.IsNullOrWhiteSpace(this._userName))
                     mainText.Span($"{this._userName} : ",
-                                (this._textProps == ChatTextComponentProperties.BoldUserName || this._textProps == ChatTextComponentProperties.BoldContent)
+                                this._textProps is ChatTextComponentProperties.BoldUserName or ChatTextComponentProperties.BoldContent
                                 ? TextStyle.Default.Bold()
                                 : TextStyle.Default);
 
@@ -116,7 +116,7 @@ namespace BP.ACoE.ChatBotHelper.Helpers
                 if (allLinks.Count <= 0)
                 {
                     mainText.Span(this._message,
-                               (this._textProps == ChatTextComponentProperties.BoldMessage || this._textProps == ChatTextComponentProperties.BoldContent)
+                               this._textProps is ChatTextComponentProperties.BoldMessage or ChatTextComponentProperties.BoldContent
                                ? TextStyle.Default.Bold()
                                : TextStyle.Default);
                 }
@@ -143,7 +143,7 @@ namespace BP.ACoE.ChatBotHelper.Helpers
                 var linkTitle = Regex.Match(allLinks[i].Value, LinkTitleRegex).Value.Replace("[", string.Empty).Replace("]", string.Empty);
 
                 mainText.Span(brokenContent[i],
-                                          (textProps == ChatTextComponentProperties.BoldMessage || textProps == ChatTextComponentProperties.BoldContent)
+                                          textProps is ChatTextComponentProperties.BoldMessage or ChatTextComponentProperties.BoldContent
                                           ? TextStyle.Default.Bold()
                                           : TextStyle.Default);
 
