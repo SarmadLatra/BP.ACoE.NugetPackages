@@ -9,5 +9,6 @@ namespace BP.ACoE.ChatBotHelper.Models
         public string? RowKey { get; set; }
         public DateTimeOffset? Timestamp { get; set; }
         public ETag ETag { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     }
 }

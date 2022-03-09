@@ -1,4 +1,4 @@
-﻿# Chat Bot Helper package v1.0
+﻿# Chat Bot Helper package v1.0.3
 
 ## Salesforce Certificate Helper
 1. using Salesforce Certificate Helper
@@ -139,11 +139,84 @@ Inject the service in startup.cs like
 ```
 
 
-services.Configure<SalesForceLiveAgentSettings>(configuration.GetSection());
+services.Configure<SalesForceLiveAgentSettings>(configuration.GetSection("SalesForceLiveAgentSettings"));
 
 // Depends on HttpClient, Serilog Logger, IOptions<SalesForceLiveAgentSettings> and IAppInsightsService service
 
 services.AddHttpClient<ISalesForceLiveAgentService, SalesForceLiveAgentService>();
+
+```
+
+## Email Service
+
+Use this service to send out transactional emails using Microsoft Graph API
+
+* it requires Azure Auth Service, Logger and Graph API config settings
+
+```
+  // Config section 
+    "GraphApiAuthSettings": {
+        "Instance": "https://login.microsoftonline.com/{0}/oauth2/v2.0/token",
+        "Tenant": "",
+        "ClientId": "",
+        "ClientSecret": ""
+    }
+```
+
+```
+// register it into the application like
+
+services.Configure<GraphApiAuthSettings>(configuration.GetSection("GraphApiAuthSettings"));
+
+// Depends on Serilog Logger, IOptions<GraphApiAuthSettings>  and AzureAuthService
+
+services.AddSingleton<IEmailService, EmailService>();
+```
+
+
+## Bot Config Service
+
+Use this service to save bot specific configuration in key value pairs in database
+
+* Configuration section required
+```
+    "BotConfigStorageSection":{
+        "TableName":"{config table name}",
+        "PartitionKey":"{Config table partition key}"    
+    }
+```
+
+* Depends on Logger, ```IOptions<StorageTableSettings> ``` and IStorageService, AutoMapper
+```
+services.Configure<StorageTableSettings>(configuration.GetSection("BotConfigStorageSection"));
+
+services.AddScoped<IBotConfigService, BotConfigService>();
+
+```
+
+
+## Encryption Service
+
+Use this service for basic AES encryption decription 
+
+```
+// configuration section
+    "EncryptionSettings":{
+        "EncryptionKey":"{Encryption key 32 bytes long}"
+    }
+
+```
+
+```
+// requires settings
+
+services.Configure<EncryptionSettings>(configuration.GetSection("EncryptionSettings"));
+
+
+// register like
+
+services.AddSingleton<IEncryptionService, EncryptionService>();
+
 
 ```
 

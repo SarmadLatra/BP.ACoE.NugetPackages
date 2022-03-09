@@ -6,3 +6,7 @@
 /BP.ACoE.ChatBotHelper/bin/Debug/net6.0
 /BP.ACoE.ChatBotHelper/obj
 /BP.ACoE.ChatBotHelper/bin/Debug
+/BP.ACoE.ChatBotHelper/bin/Release
+/BP.ACoE.ChatBotHelper.Test/Certificate/bpmeauchatbot.pfx
+/BP.ACoE.ChatBotHelper.Test/obj/Debug/net6.0
+/nuget
