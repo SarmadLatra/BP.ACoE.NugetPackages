@@ -246,3 +246,12 @@ Use the extension method ```.ToJson()``` to get serialized version of any object
     {object}.ToDictionary()
 ```
 user this extension mehtod to convert any object to dictionary.
+
+
+### Nuget Package build / Upload process
+
+After running the pack command run the following to upload/push the package to feed
+
+```
+ nuget push .\{package-name}.nupkg -ApiKey {package-key-random} -source https://bp-vsts.pkgs.visualstudio.com/67eaf4d2-2360-43e9-957e-1c7d67049d36/_packaging/Squad_Pluto_Feed/nuget/v3/index.json
+```
