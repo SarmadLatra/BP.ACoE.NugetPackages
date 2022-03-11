@@ -52,7 +52,7 @@ namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
         }
 
         [Fact]
-        public async Task Test_FindBotConfigWithKey()
+        public async Task Test_FindBotConfigWithKeyWithException()
         {
             var botConfigService = setParam("FindBotConfigWithKeyException");
 
@@ -61,9 +61,13 @@ namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
                 ConfigKey = "mockConfigKey"
             }));
 
+        }
+        [Fact]
+        public async Task Test_FindBotConfigWithKeyWithResponse()
+        {
             var botConfigResponseService = setParam("FindBotConfigWithKeyResponse");
 
-            var result = await botConfigService.FindBotConfigWithKeyAsync(new BotConfigQueryViewModel()
+            var result = await botConfigResponseService.FindBotConfigWithKeyAsync(new BotConfigQueryViewModel()
             {
                 ConfigKey = "mockConfigKey"
             });
