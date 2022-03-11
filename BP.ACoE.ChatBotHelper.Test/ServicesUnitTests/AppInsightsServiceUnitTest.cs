@@ -29,6 +29,9 @@ namespace BP.ACoE.ChatBotHelper.Test.ServicesUnitTests
             await mockAppInsightsCustomEvents.RaiseGetTranscriptsEvent
                 (new AppInsightCustomEventTypes(), "fakConversationId");
 
+            await mockAppInsightsCustomEvents.RaiseGenericCustomEvent
+              ("mockMessage", "mockConversationId", string.Empty);
+
             Assert.NotNull(mockAppInsightsCustomEvents);
         }
     }

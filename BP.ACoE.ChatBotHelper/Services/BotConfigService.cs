@@ -33,7 +33,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             newEntity.RowKey = Guid.NewGuid().ToString();
             newEntity.DateCreated = DateTime.UtcNow;
             newEntity.ValueType = ConfigValueTypes.String;
-            var entity = await _storageService.InsertEntity(_storageSettings.TableName, newEntity);
+            var entity = await _storageService.InsertEntity<BotConfigEntity>(_storageSettings.TableName, newEntity);
             _logger.Information($"{ClassName}-{methodName} bot config key saved");
             return _autoMapper.Map<BotConfigViewModel>(entity);
         }
