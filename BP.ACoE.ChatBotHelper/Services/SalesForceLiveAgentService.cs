@@ -50,7 +50,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, model.AffinityToken);
+            _client.DefaultRequestHeaders.TryAddWithoutValidation(SfApiAffinityKey, model?.AffinityToken ?? String.Empty);
             _client.DefaultRequestHeaders.Add(SfApiSessionKey, model.SessionKey);
 
             _logger.Information($"{ClassName}{methodName} Request payload is created");
@@ -89,7 +89,7 @@ namespace BP.ACoE.ChatBotHelper.Services
 
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, model.AffinityToken);
+            _client.DefaultRequestHeaders.TryAddWithoutValidation(SfApiAffinityKey, model?.AffinityToken ?? String.Empty);
             _client.DefaultRequestHeaders.Add(SfApiSessionKey, model.SessionKey);
 
             _logger.Information($"{ClassName}{methodName} Request payload is created");
@@ -121,7 +121,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, _salesForceLiveAgentSettings.GetChatMessagesUrl);
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, affinityToken);
+            _client.DefaultRequestHeaders.TryAddWithoutValidation(SfApiAffinityKey, affinityToken ?? String.Empty);
             _client.DefaultRequestHeaders.Add(SfApiSessionKey, sessionId);
 
 
@@ -178,7 +178,7 @@ namespace BP.ACoE.ChatBotHelper.Services
 
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, model.AffinityToken);
+            _client.DefaultRequestHeaders.TryAddWithoutValidation(SfApiAffinityKey, model?.AffinityToken ?? String.Empty);
             _client.DefaultRequestHeaders.Add(SfApiSessionKey, model.SessionKey);
             _client.DefaultRequestHeaders.Add(SfApiSequenceKey, "1");
 
@@ -212,7 +212,7 @@ namespace BP.ACoE.ChatBotHelper.Services
 
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, "null");
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, String.Empty);
             _client.DefaultRequestHeaders.Add(SfApiSequenceKey, "1");
             
             var response = await _client.SendAsync(requestMessage);
@@ -250,7 +250,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, _salesForceLiveAgentSettings.AvailableLiveAgentsUrl);
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, "");
+            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, String.Empty);
 
 
             _logger.Information($"{ClassName}{methodName} Request payload is created");
@@ -289,7 +289,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, affinityToken);
+            _client.DefaultRequestHeaders.TryAddWithoutValidation(SfApiAffinityKey, affinityToken ?? String.Empty);
             _client.DefaultRequestHeaders.Add(SfApiSessionKey, sessionKey);
 
             _logger.Information($"{ClassName}{methodName} Request payload is created");
@@ -325,7 +325,7 @@ namespace BP.ACoE.ChatBotHelper.Services
             _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _client.DefaultRequestHeaders.Add(SfApiVersionKey, _salesForceLiveAgentSettings.LiveAgentApiVersion);
-            _client.DefaultRequestHeaders.Add(SfApiAffinityKey, affinityToken);
+            _client.DefaultRequestHeaders.TryAddWithoutValidation(SfApiAffinityKey, affinityToken ?? String.Empty);
             _client.DefaultRequestHeaders.Add(SfApiSessionKey, sessionKey);
 
             _logger.Information($"{ClassName}{methodName} Request payload is created");
